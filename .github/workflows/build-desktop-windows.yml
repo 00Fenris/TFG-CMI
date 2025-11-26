@@ -14,7 +14,8 @@ jobs:
       - name: Set up Node
         uses: actions/setup-node@v4
         with:
-          node-version: '18'
+          # electron-builder and some modern deps require Node >= 22/26; use 26 for CI
+          node-version: '26'
 
       - name: Install repo deps
         run: |
@@ -28,11 +29,15 @@ jobs:
           npm run prepare-app
 
       - name: Package Windows .exe with electron-builder
+        env:
+          # avoid auto-discovery of signing identities in CI; we don't sign here
+          CSC_IDENTITY_AUTO_DISCOVERY: 'false'
         run: |
           cd desktop
           # ensure electron-builder and electron are available (install if missing)
           npm install --no-audit --no-fund electron@26.6.10 electron-builder@26.0.12 || true
-          npx electron-builder --win --x64 --publish=never
+          # build portable windows artifact only (avoids nsis/code-sign steps)
+          npx electron-builder --win portable --x64 --publish=never
 
       - name: Upload artifacts
         uses: actions/upload-artifact@v4

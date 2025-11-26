@@ -1,0 +1,10 @@
+{
+  "name": "tfg-cmi",
+  "version": "0.1.0",
+  "private": true,
+  "scripts": {
+    "desktop:prepare": "cd desktop && npm ci && npm run prepare-app",
+    "desktop:start": "cd desktop && npm run start",
+    "desktop:package": "cd desktop && npm run package"
+  }
+}

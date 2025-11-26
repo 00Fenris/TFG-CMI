@@ -1,0 +1,33 @@
+{
+  "name": "tfg-cmi-desktop",
+  "version": "0.1.0",
+  "private": true,
+  "main": "main.js",
+  "scripts": {
+    "prepare-app": "node prepare.js",
+    "start": "electron .",
+    "dev": "concurrently \"cd ../frontend && npm start\" \"cd ../backend && npm run dev\" \"electron .\" || true",
+    "package": "electron-builder --win --x64 --publish=never"
+  },
+  "devDependencies": {
+    "concurrently": "^8.0.1",
+    "electron": "^26.0.0",
+    "electron-builder": "^24.6.0"
+  },
+  "build": {
+    "appId": "com.clauna.cmi",
+    "productName": "TFG-CMI",
+    "files": [
+      "app/**/*",
+      "main.js",
+      "prepare.js"
+    ],
+    "directories": {
+      "output": "dist",
+      "buildResources": "assets"
+    },
+    "win": {
+      "target": ["nsis", "portable"]
+    }
+  }
+}

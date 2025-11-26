@@ -1,0 +1,38 @@
+name: Build desktop .exe (Windows)
+
+on:
+  workflow_dispatch: {}
+  push:
+    branches: [ main ]
+
+jobs:
+  build-windows:
+    runs-on: windows-latest
+    steps:
+      - uses: actions/checkout@v4
+
+      - name: Set up Node
+        uses: actions/setup-node@v4
+        with:
+          node-version: '18'
+
+      - name: Install repo deps
+        run: |
+          npm install --no-audit --no-fund
+
+      - name: Prepare desktop app (build frontend, copy backend)
+        run: |
+          cd desktop
+          npm ci
+          npm run prepare-app
+
+      - name: Package Windows .exe with electron-builder
+        run: |
+          cd desktop
+          npx electron-builder --win --x64 --publish=never
+
+      - name: Upload artifacts
+        uses: actions/upload-artifact@v4
+        with:
+          name: desktop-windows-artifacts
+          path: desktop/dist

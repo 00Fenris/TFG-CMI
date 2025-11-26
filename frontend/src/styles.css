@@ -1,0 +1,44 @@
+body { margin: 0; padding: 0; font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, 'Helvetica Neue', Arial; background: #f4f6f8; }
+input { padding: 8px; margin-left: 6px; border: 1px solid #d8dde6; border-radius: 4px; }
+button { padding: 8px 12px; border-radius: 6px; border: 0; background: #2f6feb; color: #fff; cursor: pointer; }
+
+.app-header { display: flex; justify-content: space-between; align-items: center; padding: 12px 24px; background: linear-gradient(90deg, #1f2937 0%, #2e3a59 100%); color: #fff; }
+.app-header h1 { margin: 0; font-size: 1.2rem; }
+.app-container { padding: 20px; max-width: 1200px; margin: 0 auto; }
+
+.controls a, .controls button { margin-left: 8px; }
+.btn-link { background: transparent; color: #2f6feb; text-decoration: underline; border: none; padding: 0; margin-left: 8px; cursor: pointer; }
+
+.layout { display: flex; gap: 20px; }
+.sidebar { width: 260px; background: #fff; border-radius: 8px; padding: 12px; box-shadow: 0 6px 16px rgba(33, 43, 54, 0.04); }
+.sidebar h3 { margin-top: 0; }
+.restaurant-item { padding: 8px 10px; border-radius: 6px; transition: background 0.12s; }
+.restaurant-item:hover { background: #fbfdff; }
+.restaurant-item.selected { background: #eef4ff; }
+
+.main { flex: 1; }
+.kpi-grid { display: grid; grid-template-columns: repeat(auto-fill, minmax(320px, 1fr)); gap: 16px; }
+.kpi-card { background: #fff; border-radius: 8px; padding: 14px; box-shadow: 0 6px 16px rgba(33,43,54,0.04); border: 1px solid #e6eaef; }
+.kpi-header { display: flex; justify-content: space-between; align-items: center; margin-bottom: 8px; }
+.kpi-name { font-weight: 600; }
+.kpi-value { font-size: 1.15rem; font-weight: 700; }
+.kpi-progress { height: 10px; background: #edf2f7; border-radius: 999px; overflow: hidden; margin-top: 8px; }
+.kpi-progress-fill { height: 100%; border-radius: inherit; transition: width 0.6s ease; }
+.kpi-alert { display: inline-block; padding: 3px 8px; background: #e95050; color: #fff; border-radius: 12px; font-size: 12px; margin-left: 8px; }
+.kpi-actions { margin-top: 10px; display: flex; gap: 8px; }
+
+.small-muted { color: #586069; font-size: 0.9rem; }
+.kpi-trend { display: inline-block; margin-left: 6px; font-size: 0.9rem; }
+.kpi-trend-up { color: #2ecc71; }
+.kpi-trend-down { color: #ff6b6b; }
+.catalog-overlay { position: fixed; inset: 0; background: rgba(0,0,0,0.3); display:flex; align-items:center; justify-content:center; z-index: 9999 }
+.catalog-modal { background: #fff; border-radius: 8px; padding: 16px; max-width: 900px; width: 100%; max-height: 80vh; overflow:auto; }
+
+.kpi-trend { margin-left: 8px; font-size: 0.85rem; vertical-align: middle; }
+.kpi-trend-up { color: #19a14a; }
+.kpi-trend-down { color: #e04141; }
+
+.back-link { color: #2f6feb; text-decoration: none; margin-bottom: 8px; display: inline-block; }
+.form-row { margin-bottom: 10px; }
+.form-row label { display: block; margin-bottom: 4px; color: #20232a; }
+.form-row input { width: 100%; }

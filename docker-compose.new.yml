@@ -1,0 +1,50 @@
+version: '3.8'
+services:
+  db:
+    image: postgres:15-alpine
+    restart: always
+    environment:
+      POSTGRES_USER: clauna
+      POSTGRES_PASSWORD: clauna123
+      POSTGRES_DB: tfg_cmi
+    volumes:
+      - dbdata:/var/lib/postgresql/data
+    ports:
+      - '5432:5432'
+    healthcheck:
+      test: ['CMD-SHELL', 'pg_isready -U clauna -d tfg_cmi']
+      interval: 5s
+      timeout: 5s
+      retries: 10
+
+  backend:
+    build: ./backend
+    restart: always
+    depends_on:
+      db:
+        condition: service_healthy
+    environment:
+      DATABASE_URL: postgres://clauna:clauna123@db:5432/tfg_cmi
+      JWT_SECRET: changeme
+      JWT_EXPIRES_IN: 7d
+      SEED_DB: 'true'
+      PORT: 4000
+      NODE_ENV: production
+    ports:
+      - '4000:4000'
+    volumes:
+      - ./backend:/app
+
+  frontend:
+    build:
+      context: ./frontend
+      args:
+        REACT_APP_API_URL: http://backend:4000
+    restart: always
+    ports:
+      - '3000:80'
+    depends_on:
+      - backend
+
+volumes:
+  dbdata:

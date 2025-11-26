@@ -9,10 +9,12 @@
     "dev": "concurrently \"cd ../frontend && npm start\" \"cd ../backend && npm run dev\" \"electron .\" || true",
     "package": "electron-builder --win --x64 --publish=never"
   },
+  "description": "TFG-CMI Electron desktop wrapper (bundles backend + frontend)",
+  "author": "00Fenris",
   "devDependencies": {
     "concurrently": "^8.0.1",
-    "electron": "^26.0.0",
-    "electron-builder": "^24.6.0"
+    "electron": "26.6.10",
+    "electron-builder": "26.0.12"
   },
   "build": {
     "appId": "com.clauna.cmi",

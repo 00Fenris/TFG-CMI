@@ -23,12 +23,15 @@ jobs:
       - name: Prepare desktop app (build frontend, copy backend)
         run: |
           cd desktop
-          npm ci
+          # use npm install in CI (package-lock missing in repo) so devDependencies (electron) are installed
+          npm install --no-audit --no-fund
           npm run prepare-app
 
       - name: Package Windows .exe with electron-builder
         run: |
           cd desktop
+          # ensure electron-builder and electron are available (install if missing)
+          npm install --no-audit --no-fund electron@26.6.10 electron-builder@26.0.12 || true
           npx electron-builder --win --x64 --publish=never
 
       - name: Upload artifacts

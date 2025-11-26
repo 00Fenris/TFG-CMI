@@ -1,34 +1,26 @@
 const { app, BrowserWindow, dialog } = require('electron');
 const path = require('path');
-const { spawn } = require('child_process');
-
-let backendProcess = null;
-
+// We'll run the backend inside the Electron main process (require) to avoid
+// spawn/exec issues when the app is packaged (no separate node binary available).
 function startBackend() {
-  // Start the existing backend node server from the copied backend folder
-  const backendPath = path.resolve(__dirname, 'app', 'backend', 'src', 'index.js');
-  const node = process.execPath;
-  const env = Object.assign({}, process.env);
-  // Ensure API listens on localhost:4000 and seeds the DB for first run
-  env.PORT = env.PORT || '4000';
-  env.SEED_DB = env.SEED_DB || 'true';
+  try {
+    // Ensure API listens on localhost:4000 and seeds the DB for first run
+    process.env.PORT = process.env.PORT || '4000';
+    process.env.SEED_DB = process.env.SEED_DB || 'true';
 
-  backendProcess = spawn(node, [backendPath], {
-    env,
-    cwd: path.dirname(backendPath),
-    stdio: ['ignore', 'pipe', 'pipe']
-  });
-
-  backendProcess.stdout.on('data', d => console.log('[backend]', d.toString()));
-  backendProcess.stderr.on('data', d => console.error('[backend]', d.toString()));
-  backendProcess.on('exit', (code) => console.log('Backend exited with', code));
+    const backendPath = path.resolve(__dirname, 'app', 'backend', 'src', 'index.js');
+    console.log('Starting backend by requiring', backendPath);
+    // require will evaluate the backend index.js (it starts the Express server)
+    require(backendPath);
+  } catch (err) {
+    console.error('Failed to start backend in-process:', err && err.stack ? err.stack : err);
+  }
 }
 
 function stopBackend() {
-  if (backendProcess && !backendProcess.killed) {
-    backendProcess.kill();
-    backendProcess = null;
-  }
+  // The backend runs in the same process; when Electron quits the process stops.
+  // Shutting it down gracefully would require the backend to export a stop method.
+  console.log('stopBackend: no-op (backend runs in-process)');
 }
 
 function createWindow() {

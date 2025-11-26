@@ -1,0 +1,3 @@
+# Ignore assembled app files (created by prepare.js)
+app/
+package-lock.json

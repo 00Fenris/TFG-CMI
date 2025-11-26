@@ -12,7 +12,7 @@ const root = path.resolve(__dirname, '..');
 const frontendDir = path.join(root, 'frontend');
 const backendDir = path.join(root, 'backend');
 const appDir = path.join(__dirname, 'app');
-const destFrontend = path.join(appDir, 'frontend');
+const destFrontend = path.join(appDir, 'frontend', 'build');
 const destBackend = path.join(appDir, 'backend');
 
 if (!fs.existsSync(appDir)) fs.mkdirSync(appDir, { recursive: true });
@@ -20,9 +20,15 @@ if (!fs.existsSync(appDir)) fs.mkdirSync(appDir, { recursive: true });
 // Build frontend if needed
 if (!fs.existsSync(path.join(frontendDir, 'build'))) {
   console.log('No frontend build found — building frontend...');
-  run('npm', ['ci'], { cwd: frontendDir });
-  // Ensure API url points to http://localhost:4000 for desktop
-  run('cmd /c', [`set "REACT_APP_API_URL=http://localhost:4000" && npm run build`], { cwd: frontendDir });
+  // Use npm install (safer when package-lock.json may be missing) and then build with correct API URL
+  run('npm', ['install'], { cwd: frontendDir });
+  // Ensure frontend build uses relative asset paths and correct API URL for desktop
+  // Use PUBLIC_URL='.' so the generated index.html references ./static/... which works with file:// URLs
+  if (process.platform === 'win32') {
+    run('cmd /c', [`set "REACT_APP_API_URL=http://localhost:4000" && set "PUBLIC_URL=." && npm run build`], { cwd: frontendDir });
+  } else {
+    run('sh', ['-c', `REACT_APP_API_URL=http://localhost:4000 PUBLIC_URL=. npm run build`], { cwd: frontendDir });
+  }
 }
 
 // Copy frontend build

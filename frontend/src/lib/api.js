@@ -24,4 +24,21 @@ api.interceptors.request.use((config) => {
   return config;
 });
 
+// Intercept 401 responses to handle expired/invalid token globally
+api.interceptors.response.use(
+  (response) => response,
+  (error) => {
+    const status = error?.response?.status;
+    const message = error?.response?.data?.message || '';
+    if (status === 401 && (message.toLowerCase().includes('expired') || message.toLowerCase().includes('invalid') || message.toLowerCase().includes('authentication'))) {
+      // Clear auth and redirect to login
+      localStorage.removeItem('token');
+      // eslint-disable-next-line no-console
+      console.warn('Session expired or invalid. Redirecting to login.');
+      try { window.location.href = '/login'; } catch (e) { /* ignore in non-browser env */ }
+    }
+    return Promise.reject(error);
+  }
+);
+
 export default api;

@@ -71,3 +71,16 @@ La solución arquitectónica implementada consta de:
 | **Aprendizaje** | *Tasa de Rotación de Personal* | El coste oculto del sector HORECA. Una alta rotación destruye el conocimiento acumulado y erosiona el servicio. (Tracey & Hinkin, 2008). |
 
 *(En este apartado se incluirán capturas de pantalla del prototipo en funcionamiento visualizando los gráficos y métricas del Dashboard de Claunafood).*
+
+#### 4.1. Fundamentación del Índice de Lealtad: El *Net Promoter Score* (NPS)
+
+De entre la batería de indicadores monitorizados por el panel de control de Claunafood, cobra especial relevancia estratégica el **Net Promoter Score (NPS)**. Desarrollado en 2003 por Fred Reichheld (Bain & Company), el NPS ha trascendido como el estándar de oro (*gold standard*) en la medición empírica de la lealtad y la experiencia del comensal en la hostelería contemporánea.
+
+A diferencia de métricas reactivas y de corto plazo como el ticket medio o el EBITDA (que diagnostican el rendimiento financiero *pasado*), el NPS actúa como un **indicador predictivo (*leading indicator*) de la rentabilidad futura**. Su cálculo se fundamenta en estructurar el *feedback* post-servicio mediante una única pregunta de fácil tabulación: _"En una escala del 0 al 10, ¿con qué probabilidad recomendaría la experiencia en [La Mafia / Ditaly] a un amigo o familiar?"_
+
+El algoritmo de cálculo integrado en el *Backend* del CMI divide a la base de clientes en tres espectros actitudinales:
+1. **Promotores (9-10):** Clientes hiper-satisfechos con alto índice de repetición y poder evangelizador (*Word of Mouth* positivo).
+2. **Pasivos (7-8):** Clientes mercenarios o indiferentes. Su retención es frágil frente a promociones agresivas de competidores adyacentes.
+3. **Detractores (0-6):** Clientes insatisfechos con poder destructor de marca. Impactan severamente en la reputación online (*TripAdvisor, Google Reviews*).
+
+La formulación final, sobre la que el Cuadro de Mando alerta ante desviaciones críticas, se establece como la sustracción porcentual: `NPS = % Promotores - % Detractores`. Un índice NPS consolidado para los locales de Claunafood igual o superior a +50 puntos certifica la excelencia operativa en sala y cocina, garantizando el blindaje de la cuota de mercado local frente a la competencia entrante.

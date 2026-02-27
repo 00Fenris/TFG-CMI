@@ -1,0 +1,46 @@
+name: Build desktop .exe (Windows)
+
+on:
+  workflow_dispatch: {}
+  push:
+    branches: [ main ]
+
+jobs:
+  build-windows:
+    runs-on: windows-latest
+    steps:
+      - uses: actions/checkout@v4
+
+      - name: Set up Node
+        uses: actions/setup-node@v4
+        with:
+          # electron-builder and some modern deps require Node >= 22/26; use 26 for CI
+          node-version: '26'
+
+      - name: Install repo deps
+        run: |
+          npm install --no-audit --no-fund
+
+      - name: Prepare desktop app (build frontend, copy backend)
+        run: |
+          cd desktop
+          # use npm install in CI (package-lock missing in repo) so devDependencies (electron) are installed
+          npm install --no-audit --no-fund
+          npm run prepare-app
+
+      - name: Package Windows .exe with electron-builder
+        env:
+          # avoid auto-discovery of signing identities in CI; we don't sign here
+          CSC_IDENTITY_AUTO_DISCOVERY: 'false'
+        run: |
+          cd desktop
+          # ensure electron-builder and electron are available (install if missing)
+          npm install --no-audit --no-fund electron@26.6.10 electron-builder@26.0.12 || true
+          # build portable windows artifact only (avoids nsis/code-sign steps)
+          npx electron-builder --win portable --x64 --publish=never
+
+      - name: Upload artifacts
+        uses: actions/upload-artifact@v4
+        with:
+          name: desktop-windows-artifacts
+          path: desktop/dist

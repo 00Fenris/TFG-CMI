@@ -19,6 +19,7 @@ const kpiEntryRoutes = require('./routes/kpiEntries');
 const taskRoutes = require('./routes/tasks');
 const dashboardRoutes = require('./routes/dashboard');
 const alertRoutes = require('./routes/alerts');
+const aiRoutes = require('./routes/ai');
 const { sequelize } = require('./models');
 const seed = require('./seed');
 
@@ -32,6 +33,7 @@ app.use('/kpi-entries', kpiEntryRoutes);
 app.use('/tasks', taskRoutes);
 app.use('/dashboard', dashboardRoutes);
 app.use('/alerts', alertRoutes);
+app.use('/ai', aiRoutes);
 
 app.get('/', async (req, res) => {
   try {

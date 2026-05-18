@@ -413,9 +413,9 @@ export default function Dashboard({ token, onLogout }) {
               </div>
             </div>
 
-            <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', marginBottom: 20 }}>
+            <div className="monitor-header">
               <h3 style={{ margin: 0, fontWeight: 600, fontSize: '1.4rem' }}>Monitorización Estratégica</h3>
-              <div style={{ display: 'flex', gap: 8, alignItems: 'center' }}>
+              <div className="monitor-filters">
                 <div>
                   <label className="small-muted">Perspectiva</label>
                   <select value={selectedPerspective} onChange={e => setSelectedPerspective(e.target.value)} style={{ marginLeft: 8 }}>

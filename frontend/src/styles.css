@@ -371,3 +371,32 @@ button:active { transform: scale(0.98); }
   .kpi-grid { grid-template-columns: 1fr; }
   .cmi-summary { grid-template-columns: 1fr; }
 }
+
+/* === Cabecera y Filtros de Monitorización Responsivos === */
+.monitor-header {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  margin-bottom: 20px;
+  flex-wrap: wrap;
+  gap: 16px;
+}
+.monitor-filters {
+  display: flex;
+  gap: 16px;
+  align-items: center;
+  flex-wrap: wrap;
+}
+@media (max-width: 768px) {
+  .monitor-header {
+    flex-direction: column;
+    align-items: flex-start;
+    gap: 12px;
+  }
+  .monitor-filters {
+    width: 100%;
+    justify-content: space-between;
+    gap: 12px;
+  }
+}
+

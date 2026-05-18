@@ -52,8 +52,8 @@ export default function Login({ onLogin }) {
         <button type="submit">Login</button>
         <div style={{ marginTop: 12 }}>
           <button type="button" onClick={() => quickLogin('admin@claunafood.local', 'password')}>Login as Admin</button>
-          <button type="button" onClick={() => quickLogin('manager.salamanca@claunafood.local', 'password')} style={{ marginLeft: 8 }}>Login as Manager (Ditaly)</button>
-          <button type="button" onClick={() => quickLogin('manager.zamora@claunafood.local', 'password')} style={{ marginLeft: 8 }}>Login as Manager (LaRuqa)</button>
+          <button type="button" onClick={() => quickLogin('manager.salamanca@claunafood.local', 'password')} style={{ marginLeft: 8 }}>Login as Manager (Salamanca)</button>
+          <button type="button" onClick={() => quickLogin('manager.zamora@claunafood.local', 'password')} style={{ marginLeft: 8 }}>Login as Manager (Zamora)</button>
         </div>
         {error && <div style={{ color: 'red' }}>{error}</div>}
       </form>

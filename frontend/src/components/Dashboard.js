@@ -3,8 +3,10 @@ import api from '../lib/api';
 import { useNavigate } from 'react-router-dom';
 import { AreaChart, Area, XAxis, YAxis, Tooltip, ResponsiveContainer, CartesianGrid } from 'recharts';
 import TaskModal from './TaskModal';
+import jwt_decode from 'jwt-decode';
 
 export default function Dashboard({ token, onLogout }) {
+  const user = jwt_decode(token);
   const [restaurants, setRestaurants] = useState([]);
   const [selected, setSelected] = useState(null);
   const [kpiData, setKpiData] = useState([]);
@@ -35,10 +37,11 @@ export default function Dashboard({ token, onLogout }) {
 
   const loadRestaurants = async () => {
     const res = await api.get('/restaurants');
-    setRestaurants(res.data);
-    if (res.data.length) {
-      setSelected(res.data[0].id);
-      loadKpis(res.data[0].id);
+    const filtered = user.role === 'admin' ? res.data : res.data.filter(r => r.id === user.restaurant_id);
+    setRestaurants(filtered);
+    if (filtered.length) {
+      setSelected(filtered[0].id);
+      loadKpis(filtered[0].id);
     }
   };
 
@@ -340,13 +343,15 @@ export default function Dashboard({ token, onLogout }) {
         </div>
         <div className="layout">
           <div className="sidebar">
-            <button
-              className="btn-primary"
-              style={{ width: '100%', marginBottom: 16, padding: '12px', fontSize: '1.05rem', background: scope === 'global' ? 'linear-gradient(45deg, #10b981, #047857)' : 'var(--accent-cyan)' }}
-              onClick={() => { setSelected(null); handleScopeChange('global'); }}
-            >
-              🏢 Situación Global Consolidada
-            </button>
+            {user.role === 'admin' && (
+              <button
+                className="btn-primary"
+                style={{ width: '100%', marginBottom: 16, padding: '12px', fontSize: '1.05rem', background: scope === 'global' ? 'linear-gradient(45deg, #10b981, #047857)' : 'var(--accent-cyan)' }}
+                onClick={() => { setSelected(null); handleScopeChange('global'); }}
+              >
+                🏢 Situación Global Consolidada
+              </button>
+            )}
             <h3 style={{ marginTop: 0 }}>Restaurantes</h3>
             <div style={{ display: 'flex', gap: 8, marginBottom: 8 }}>
               <input placeholder="Buscar..." value={searchText} onChange={e => setSearchText(e.target.value)} />

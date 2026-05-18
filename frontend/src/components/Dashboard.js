@@ -147,8 +147,10 @@ export default function Dashboard({ token, onLogout }) {
     if (newScope === 'global') loadGlobal();
     else if (newScope === 'restaurant' && selected) loadKpis(selected);
   };
-  const removeKpiFromDashboard = (index) => {
-    setKpiData(prev => prev.filter((_, i) => i !== index));
+  const removeKpiFromDashboard = (index, kpiName) => {
+    if (window.confirm(`¿Estás seguro de que deseas quitar "${kpiName}" del panel de monitorización?`)) {
+      setKpiData(prev => prev.filter((_, i) => i !== index));
+    }
   };
 
   const loadTasks = async () => {
@@ -495,7 +497,7 @@ export default function Dashboard({ token, onLogout }) {
                       </div>
                       <div className="kpi-actions">
                         <button onClick={() => navigate(`/kpi/${k.id}`)}>Ver KPI</button>
-                        <button style={{ background: '#ff6b6b', color: '#fff' }} onClick={() => removeKpiFromDashboard(index)}>Eliminar</button>
+                        <button style={{ background: '#ff6b6b', color: '#fff' }} onClick={() => removeKpiFromDashboard(index, k.name)}>Eliminar</button>
                       </div>
                     </div>
                   );

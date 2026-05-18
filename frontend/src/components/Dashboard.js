@@ -39,7 +39,7 @@ export default function Dashboard({ token, onLogout }) {
     const res = await api.get('/restaurants');
     const mapped = res.data.map(r => {
       let prettyName = r.name;
-      if (r.name.includes('Nuevo Local')) prettyName = 'Claunafood - LaRuqa (Nuevo Local)';
+      if (r.name.includes('Nuevo Local')) prettyName = 'Claunafood - LaRuqa (Siglo XXI - Zamora)';
       else if (r.name.includes('Salamanca')) prettyName = 'Claunafood - Ditaly (Salamanca)';
       else if (r.name.includes('Zamora')) prettyName = 'Claunafood - La Mafia (Zamora)';
       return { ...r, name: prettyName };

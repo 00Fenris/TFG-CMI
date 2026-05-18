@@ -160,7 +160,8 @@ export default function Dashboard({ token, onLogout }) {
   const loadCatalog = async () => {
     try {
       const res = await api.get('/kpis');
-      setCatalogKpis(res.data);
+      const uniqueKpis = Array.from(new Map(res.data.map(item => [item.name, item])).values());
+      setCatalogKpis(uniqueKpis);
     } catch (err) {
       // ignore
     }

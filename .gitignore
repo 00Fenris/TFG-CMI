@@ -15,3 +15,14 @@ yarn-error.log*
 coverage/
 dist/
 *.log
+
+# Ignorar documentos de la memoria y scripts temporales
+docs/
+desktop/
+scripts/
+*.pdf
+*.docx
+*.dotx
+*.txt
+*.py
+pdf_extracted.json

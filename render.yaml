@@ -1,0 +1,47 @@
+services:
+  # 1. Base de datos PostgreSQL gratuita
+  - type: psql
+    name: claunafood-db
+    plan: free
+    postgresMajorVersion: 15
+
+  # 2. Backend (Node.js)
+  - type: web
+    name: claunafood-backend
+    env: node
+    plan: free
+    region: frankfurt
+    buildCommand: "cd backend && npm install"
+    startCommand: "cd backend && node src/seed.js && npm start"
+    envVars:
+      - key: DATABASE_URL
+        fromDatabase:
+          name: claunafood-db
+          property: connectionString
+      - key: SEED_DB
+        value: "true"
+      - key: JWT_SECRET
+        generateValue: true
+
+  # 3. Frontend (React)
+  - type: web
+    name: claunafood-frontend
+    env: static
+    plan: free
+    region: frankfurt
+    buildCommand: "cd frontend && npm install && npm run build"
+    staticPublishPath: "./frontend/build"
+    envVars:
+      - key: REACT_APP_API_URL
+        fromService:
+          type: web
+          name: claunafood-backend
+          property: hostport
+        # We add https:// so the frontend calls the secure backend URL
+      - key: REACT_APP_API_URL
+        value: https://claunafood-backend.onrender.com
+    routes:
+      # Support React Router by redirecting all traffic to index.html
+      - type: rewrite
+        source: /*
+        destination: /index.html

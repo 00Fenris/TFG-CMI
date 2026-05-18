@@ -24,8 +24,8 @@ export default function Dashboard({ token, onLogout }) {
     loadRestaurants();
     loadPerspectives();
     loadObjectives();
-  loadAlerts();
-  loadTasks();
+    loadAlerts();
+    loadTasks();
   }, []);
 
   const loadRestaurants = async () => {
@@ -166,19 +166,73 @@ export default function Dashboard({ token, onLogout }) {
   };
 
   const exportHref = scope === 'global' ? `${api.defaults.baseURL}/kpis/export` : `${api.defaults.baseURL}/kpis/export?restaurant_id=${selected}`;
+
+  // Calculate KPIs per perspective for summary cards
+  const getPerspectiveName = (item) => {
+    const obj = objectives.find(o => o.id === item.kpi.objective_id);
+    const persp = obj ? perspectives.find(p => p.id === obj.perspective_id) : null;
+    return persp ? persp.name : 'Sin perspectiva';
+  };
+
+  const perspectiveSummary = perspectives.map(p => {
+    const kpisInPerspective = kpiData.filter(item => {
+      const obj = objectives.find(o => o.id === item.kpi.objective_id);
+      return obj && obj.perspective_id === p.id;
+    });
+    const onTarget = kpisInPerspective.filter(item => {
+      const curr = Number(item.kpi.current_value || 0);
+      const target = Number(item.kpi.target_value || 1);
+      const ratio = curr / target;
+      return item.kpi.alert_condition === 'above' ? ratio <= 1 : ratio >= 0.9;
+    }).length;
+    return { ...p, total: kpisInPerspective.length, onTarget };
+  });
+
+  const perspectiveColors = {
+    'Financiera': { bg: '#dbeafe', color: '#1e40af', icon: '💰' },
+    'Clientes': { bg: '#dcfce7', color: '#166534', icon: '👥' },
+    'Procesos Internos': { bg: '#fef3c7', color: '#92400e', icon: '⚙️' },
+    'Aprendizaje y Crecimiento': { bg: '#f3e8ff', color: '#7c3aed', icon: '📚' }
+  };
+
   return (
     <div>
       <div className="app-header">
-        <h1>Claunafood — CMI Demo</h1>
+        <h1>Claunafood — Cuadro de Mando Integral</h1>
         <div className="controls">
-          <button onClick={onLogout}>Logout</button>
-          <button style={{ marginLeft: 8 }} onClick={openCatalog}>KPIs catalog</button>
-          <button style={{ marginLeft: 8 }} onClick={() => setShowAlerts(true)}>Alertas {alerts.length > 0 && <span className="kpi-alert" style={{ display: 'inline-block', marginLeft: 8 }}>{alerts.length}</span>}</button>
-          <a className="btn-link" href={exportHref} target="_blank" rel="noreferrer">Export CSV</a>
-          <a className="btn-link" href="/objectives/new">New Objective</a>
+          <button onClick={() => navigate('/strategic-map')}>🗺️ Mapa Estratégico</button>
+          <button onClick={() => navigate('/comparison')}>📊 Comparar</button>
+          <button onClick={() => navigate('/scorecard')}>📋 Evaluación</button>
+          <button onClick={openCatalog}>Catálogo KPIs</button>
+          <button onClick={() => setShowAlerts(true)}>
+            Alertas {alerts.length > 0 && <span className="kpi-alert">{alerts.length}</span>}
+          </button>
+          <a className="btn-link" href={exportHref} target="_blank" rel="noreferrer">Exportar CSV</a>
+          <button onClick={onLogout} style={{ background: '#64748b' }}>Cerrar sesión</button>
         </div>
       </div>
       <div className="app-container">
+        {/* CMI Perspective Summary Cards */}
+        <div className="cmi-summary">
+          {perspectiveSummary.map(p => {
+            const colors = perspectiveColors[p.name] || { bg: '#f1f5f9', color: '#475569', icon: '📊' };
+            return (
+              <div
+                key={p.id}
+                className="cmi-summary-card"
+                style={{ background: colors.bg, borderLeft: `4px solid ${colors.color}` }}
+                onClick={() => setSelectedPerspective(p.id)}
+              >
+                <div style={{ fontSize: '1.5rem', marginBottom: 8 }}>{colors.icon}</div>
+                <h4 style={{ color: colors.color }}>{p.name}</h4>
+                <div className="value" style={{ color: colors.color }}>{p.total}</div>
+                <div className="small-muted">
+                  {p.onTarget}/{p.total} en objetivo
+                </div>
+              </div>
+            );
+          })}
+        </div>
         <div className="layout">
           <div className="sidebar">
             <h3>Restaurantes</h3>
@@ -191,8 +245,8 @@ export default function Dashboard({ token, onLogout }) {
                 .filter(r => !searchText || r.name.toLowerCase().includes(searchText.toLowerCase()))
                 .sort((a, b) => sortOrder === 'asc' ? a.name.localeCompare(b.name) : b.name.localeCompare(a.name))
                 .map(r => (
-                <li key={r.id} className={`restaurant-item ${selected === r.id ? 'selected' : ''}`} onClick={() => handleSelect(r.id)}>{r.name}</li>
-              ))}
+                  <li key={r.id} className={`restaurant-item ${selected === r.id ? 'selected' : ''}`} onClick={() => handleSelect(r.id)}>{r.name}</li>
+                ))}
             </ul>
             <div style={{ marginTop: 16 }}>
               <h4>Tareas</h4>
@@ -213,8 +267,8 @@ export default function Dashboard({ token, onLogout }) {
                 <div>
                   <label className="small-muted">Perspectiva</label>
                   <select value={selectedPerspective} onChange={e => setSelectedPerspective(e.target.value)} style={{ marginLeft: 8 }}>
-                  <option value="all">Todas</option>
-                  {perspectives.map(p => <option key={p.id} value={p.id}>{p.name}</option>)}
+                    <option value="all">Todas</option>
+                    {perspectives.map(p => <option key={p.id} value={p.id}>{p.name}</option>)}
                   </select>
                 </div>
                 <div>
@@ -235,60 +289,68 @@ export default function Dashboard({ token, onLogout }) {
                   return pId && String(pId) === String(selectedPerspective);
                 })
                 .map((item, index) => {
-                const k = item.kpi;
-                const progress = computeProgress(k);
-                const alert = computeAlert(k);
-                return (
-                  <div key={k.id} className="kpi-card">
-                    <div className="kpi-header">
-                      <div>
-                        <div className="kpi-name">{k.name}</div>
-                        <div className="small-muted">{k.description}</div>
-                        {item.restaurant && <div className="small-muted">{item.restaurant.name}</div>}
-                      </div>
-                          <div>
-                            <div className="kpi-value">{k.current_value ?? '-'}</div>
-                            {(() => {
-                              const t = computeTrend(item.entries);
-                              if (t.dir === 'up') return <span className="kpi-trend kpi-trend-up">▲ +{t.delta}</span>;
-                              if (t.dir === 'down') return <span className="kpi-trend kpi-trend-down">▼ {t.delta}</span>;
-                              return <span className="kpi-trend">—</span>;
-                            })()}
-                          </div>
-                    </div>
-                    <div style={{ height: 140 }}>
-                      <ResponsiveContainer width="100%" height="100%">
-                        <AreaChart data={item.entries.map(e => ({ date: e.period_start, value: Number(e.value) }))}>
-                          <defs>
-                            <linearGradient id={`g${k.id}`} x1="0" y1="0" x2="0" y2="1">
-                              <stop offset="5%" stopColor="#8884d8" stopOpacity={0.8}/>
-                              <stop offset="95%" stopColor="#8884d8" stopOpacity={0}/>
-                            </linearGradient>
-                          </defs>
-                          <XAxis dataKey="date" />
-                          <Tooltip />
-                          <Area type="monotone" dataKey="value" stroke="#8884d8" fillOpacity={1} fill={`url(#g${k.id})`} />
-                        </AreaChart>
-                      </ResponsiveContainer>
-                    </div>
-                    <div style={{ marginTop: 8 }}>
-                      <div style={{ display: 'flex', alignItems: 'center', gap: 8 }}>
-                        <div style={{ flex: 1 }}>
-                          <div className="kpi-progress">
-                            <div className="kpi-progress-fill" style={{ width: `${progress}%`, background: alert ? '#de4b4b' : '#4caf50' }} />
-                          </div>
-                          <div className="small-muted" style={{ marginTop: 6 }}>{progress}% of target ({k.target_value ?? '-'})</div>
+                  const k = item.kpi;
+                  const progress = computeProgress(k);
+                  const alert = computeAlert(k);
+                  const perspectiveName = getPerspectiveName(item);
+                  const pColors = perspectiveColors[perspectiveName] || { bg: '#f1f5f9', color: '#475569' };
+                  return (
+                    <div key={k.id} className="kpi-card">
+                      <div className="kpi-header">
+                        <div>
+                          <span
+                            className="perspective-badge"
+                            style={{ background: pColors.bg, color: pColors.color, marginBottom: 8, display: 'inline-block' }}
+                          >
+                            {perspectiveName}
+                          </span>
+                          <div className="kpi-name">{k.name}</div>
+                          <div className="small-muted">{k.description}</div>
+                          {item.restaurant && <div className="small-muted">📍 {item.restaurant.name}</div>}
                         </div>
-                        {alert && <div className="kpi-alert">Alert</div>}
+                        <div>
+                          <div className="kpi-value">{k.current_value ?? '-'}</div>
+                          {(() => {
+                            const t = computeTrend(item.entries);
+                            if (t.dir === 'up') return <span className="kpi-trend kpi-trend-up">▲ +{t.delta}</span>;
+                            if (t.dir === 'down') return <span className="kpi-trend kpi-trend-down">▼ {t.delta}</span>;
+                            return <span className="kpi-trend">—</span>;
+                          })()}
+                        </div>
+                      </div>
+                      <div style={{ height: 140 }}>
+                        <ResponsiveContainer width="100%" height="100%">
+                          <AreaChart data={item.entries.map(e => ({ date: e.period_start, value: Number(e.value) }))}>
+                            <defs>
+                              <linearGradient id={`g${k.id}`} x1="0" y1="0" x2="0" y2="1">
+                                <stop offset="5%" stopColor="#8884d8" stopOpacity={0.8} />
+                                <stop offset="95%" stopColor="#8884d8" stopOpacity={0} />
+                              </linearGradient>
+                            </defs>
+                            <XAxis dataKey="date" />
+                            <Tooltip />
+                            <Area type="monotone" dataKey="value" stroke="#8884d8" fillOpacity={1} fill={`url(#g${k.id})`} />
+                          </AreaChart>
+                        </ResponsiveContainer>
+                      </div>
+                      <div style={{ marginTop: 8 }}>
+                        <div style={{ display: 'flex', alignItems: 'center', gap: 8 }}>
+                          <div style={{ flex: 1 }}>
+                            <div className="kpi-progress">
+                              <div className="kpi-progress-fill" style={{ width: `${progress}%`, background: alert ? '#de4b4b' : '#4caf50' }} />
+                            </div>
+                            <div className="small-muted" style={{ marginTop: 6 }}>{progress}% of target ({k.target_value ?? '-'})</div>
+                          </div>
+                          {alert && <div className="kpi-alert">Alert</div>}
+                        </div>
+                      </div>
+                      <div className="kpi-actions">
+                        <button onClick={() => navigate(`/kpi/${k.id}`)}>Ver KPI</button>
+                        <button style={{ background: '#ff6b6b', color: '#fff' }} onClick={() => removeKpiFromDashboard(index)}>Eliminar</button>
                       </div>
                     </div>
-                    <div className="kpi-actions">
-                      <button onClick={() => navigate(`/kpi/${k.id}`)}>Ver KPI</button>
-                      <button style={{ background: '#ff6b6b', color: '#fff' }} onClick={() => removeKpiFromDashboard(index)}>Eliminar</button>
-                    </div>
-                  </div>
-                );
-              })}
+                  );
+                })}
             </div>
           </div>
         </div>

@@ -23,10 +23,23 @@ export default function KpiDetail() {
 
   const submitEntry = async (e) => {
     e.preventDefault();
-    await api.post('/kpi-entries', { kpi_id: id, value: Number(value), period_start: date });
-    setValue('');
-    setDate('');
-    load();
+    if (!value || !date) {
+      alert('Por favor ingresa valor y fecha');
+      return;
+    }
+    try {
+      await api.post('/kpi-entries', {
+        kpi_id: parseInt(id),
+        value: Number(value),
+        period_start: date
+      });
+      setValue('');
+      setDate('');
+      load();
+    } catch (err) {
+      console.error('Error adding entry:', err);
+      alert('Error al agregar entrada: ' + (err.response?.data?.message || err.message));
+    }
   };
 
   if (!kpi) return <div>Loading...</div>;
@@ -40,14 +53,14 @@ export default function KpiDetail() {
         <h2>{kpi.name}</h2>
         <p>{kpi.description}</p>
         <div style={{ width: '100%', height: 300 }}>
-        <ResponsiveContainer width="100%" height="100%">
-          <AreaChart data={entries.map(e => ({ date: e.period_start, value: Number(e.value) }))}>
-            <XAxis dataKey="date" />
-            <Tooltip />
-            <Area type="monotone" dataKey="value" stroke="#82ca9d" fill="#82ca9d" />
-          </AreaChart>
-        </ResponsiveContainer>
-      </div>
+          <ResponsiveContainer width="100%" height="100%">
+            <AreaChart data={entries.map(e => ({ date: e.period_start, value: Number(e.value) }))}>
+              <XAxis dataKey="date" />
+              <Tooltip />
+              <Area type="monotone" dataKey="value" stroke="#82ca9d" fill="#82ca9d" />
+            </AreaChart>
+          </ResponsiveContainer>
+        </div>
         <div style={{ marginTop: 12 }}>
           <div className="small-muted">Progress to target: {progress}% ({kpi.target_value ?? '-'})</div>
           <div className="kpi-progress" style={{ marginTop: 8 }}>

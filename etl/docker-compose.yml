@@ -1,0 +1,17 @@
+version: '3.8'
+
+services:
+  openclaw-bot:
+    build: .
+    container_name: openclaw_invoice_processor
+    restart: unless-stopped
+    volumes:
+      # RUTAS IMPORTANTES:
+      # Debes apuntar la ruta izquierda a la carpeta de facturas de tu Windows o NAS mapped drive
+      # Ejemplo Windows: C:\Users\Ignacio\Desktop\Facturas
+      - ./facturas_nas:/app/data
+    env_file:
+      - .env
+    environment:
+      - NODE_ENV=production
+      - PYTHONUNBUFFERED=1

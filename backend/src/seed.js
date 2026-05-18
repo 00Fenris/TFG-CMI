@@ -44,8 +44,8 @@ async function seed() {
   ];
   const perspectives = [];
   for (const p of perspectivesSeed) {
-    const model = await retry(() => Perspective.findOrCreate({ where: { name: p.name }, defaults: p }));
-    perspectives.push(Array.isArray(model) ? model[0] : model);
+    const model = await retry(() => Perspective.create(p));
+    perspectives.push(model);
   }
   const [pFinanciera, pClientes, pProcesos, pAprendizaje] = perspectives;
 

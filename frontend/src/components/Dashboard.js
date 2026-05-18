@@ -1,7 +1,8 @@
 import React, { useEffect, useState } from 'react';
 import api from '../lib/api';
 import { useNavigate } from 'react-router-dom';
-import { AreaChart, Area, XAxis, YAxis, Tooltip, ResponsiveContainer } from 'recharts';
+import { AreaChart, Area, XAxis, YAxis, Tooltip, ResponsiveContainer, CartesianGrid } from 'recharts';
+import TaskModal from './TaskModal';
 
 export default function Dashboard({ token, onLogout }) {
   const [restaurants, setRestaurants] = useState([]);
@@ -18,6 +19,10 @@ export default function Dashboard({ token, onLogout }) {
   const [showAlerts, setShowAlerts] = useState(false);
   const [showCatalog, setShowCatalog] = useState(false);
   const [catalogKpis, setCatalogKpis] = useState([]);
+  const [aiInsight, setAiInsight] = useState(null);
+  const [aiLoading, setAiLoading] = useState(false);
+  const [activeKpiForTask, setActiveKpiForTask] = useState(null);
+  const [pushToast, setPushToast] = useState(null);
   const navigate = useNavigate();
 
   useEffect(() => {
@@ -65,14 +70,58 @@ export default function Dashboard({ token, onLogout }) {
 
   const loadGlobal = async () => {
     const res = await api.get('/dashboard/global');
-    // res.data: [{ restaurant, kpis: [{ kpi, entries }] }]
-    const all = [];
+    // Aggregate KPIs by name across all restaurants
+    const aggregated = {};
     res.data.forEach(group => {
-      group.kpis.forEach(k => {
-        all.push({ ...k, restaurant: group.restaurant });
+      group.kpis.forEach(item => {
+        const kName = item.kpi.name;
+        if (!aggregated[kName]) {
+          // Initialize aggregated KPI structural clone
+          aggregated[kName] = {
+            kpi: { ...item.kpi, target_value: Number(item.kpi.target_value) },
+            entries: [],
+            restaurantCount: 1
+          };
+
+          item.entries.forEach(e => {
+            aggregated[kName].entries.push({ date: e.period_start, value: Number(e.value), count: 1 });
+          });
+        } else {
+          // Aggregate target
+          aggregated[kName].kpi.target_value += Number(item.kpi.target_value);
+          aggregated[kName].restaurantCount++;
+
+          // Aggregate entries by date
+          item.entries.forEach(e => {
+            const existingEntry = aggregated[kName].entries.find(a => a.date === e.period_start);
+            if (existingEntry) {
+              existingEntry.value += Number(e.value);
+              existingEntry.count++;
+            } else {
+              aggregated[kName].entries.push({ date: e.period_start, value: Number(e.value), count: 1 });
+            }
+          });
+        }
       });
     });
-    setKpiData(all);
+
+    // Average the percentages and aggregate currencies
+    const finalData = Object.values(aggregated).map(agg => {
+      const isPercent = agg.kpi.unit === 'percent' || agg.kpi.unit === 'number';
+      if (isPercent) agg.kpi.target_value = (agg.kpi.target_value / agg.kpi.restaurantCount).toFixed(2);
+
+      agg.entries = agg.entries.map(e => ({
+        ...e,
+        period_start: e.date,
+        value: isPercent ? (e.value / e.count).toFixed(2) : e.value.toFixed(2)
+      })).sort((a, b) => new Date(a.date) - new Date(b.date));
+
+      agg.kpi.current_value = agg.entries.length ? agg.entries[agg.entries.length - 1].value : 0;
+      agg.restaurant = { name: 'Consolidado Global (Franquicia)' };
+      return agg;
+    });
+
+    setKpiData(finalData);
   };
 
   const loadAlerts = async () => {
@@ -135,6 +184,42 @@ export default function Dashboard({ token, onLogout }) {
       console.error('add kpi error', err);
     }
   };
+
+  const generateInsight = async (kpisToAnalyze) => {
+    if (!kpisToAnalyze || kpisToAnalyze.length === 0) return;
+    setAiLoading(true);
+    try {
+      const res = await api.post('/ai/insights', { kpis: kpisToAnalyze, scope });
+      setAiInsight(res.data);
+    } catch (err) {
+      console.error('AI Insight Error', err);
+      setAiInsight({ deteccion: 'El motor de inferencia Groq ha perdido conexión temporalmente.', recomendacion: 'Verifique su API Key o la disponibilidad del servicio LLM.' });
+    } finally {
+      setAiLoading(false);
+    }
+  };
+
+  const pushTelegram = async () => {
+    try {
+      if (kpiData.length === 0) return alert('No hay datos en pantalla para auditar');
+      const res = await api.post('/alerts/scan', { kpis: kpiData, scope });
+
+      // In-App Glassmorphism Toast para asegurar visibilidad al 100%
+      setPushToast({
+        title: '🚨 OPENCLAW ALERT PUSH',
+        message: `Escaneo completado sobre ${scope === 'global' ? 'Franquicia Global' : 'Local Individual'}. Se han detectado ${res.data.alerts} desviaciones críticas. Revisa el Módulo de Tareas y reasigna los recursos.`
+      });
+
+      // Auto-ocultar la tostada a los 8 segundos
+      setTimeout(() => setPushToast(null), 8000);
+
+    } catch (err) {
+      console.error('Error lanzando Push', err);
+      // alert estático solo si hay un error real de backend
+      alert('Error ejecutando el escaneo de alertas. Revisa la consola.');
+    }
+  };
+
   const computeProgress = (kpi) => {
     const curr = Number(kpi.current_value || 0);
     const target = Number(kpi.target_value || 0);
@@ -197,6 +282,25 @@ export default function Dashboard({ token, onLogout }) {
 
   return (
     <div>
+      {/* CUSTOM IN-APP TOAST */}
+      {pushToast && (
+        <div style={{
+          position: 'fixed', top: 20, right: 20, zIndex: 9999,
+          background: 'rgba(15, 23, 42, 0.85)', backdropFilter: 'blur(12px)',
+          border: '1px solid rgba(16, 185, 129, 0.5)', borderRadius: '12px',
+          boxShadow: '0 8px 32px rgba(0,0,0,0.5)', padding: '16px 20px',
+          color: '#fff', width: 350, transform: 'translateY(0)', transition: 'all 0.3s ease',
+          animation: 'slideInRight 0.4s ease-out forwards'
+        }}>
+          <div style={{ display: 'flex', alignItems: 'center', gap: 12, marginBottom: 8 }}>
+            <div style={{ background: 'var(--accent-purple)', borderRadius: '50%', width: 32, height: 32, display: 'flex', alignItems: 'center', justifyContent: 'center', fontSize: '1.2rem' }}>📲</div>
+            <strong style={{ fontSize: '1.1rem', color: '#10b981' }}>{pushToast.title}</strong>
+          </div>
+          <p style={{ margin: 0, fontSize: '0.95rem', lineHeight: 1.5, color: 'rgba(255,255,255,0.9)' }}>
+            {pushToast.message}
+          </p>
+        </div>
+      )}
       <div className="app-header">
         <h1>Claunafood — Cuadro de Mando Integral</h1>
         <div className="controls">
@@ -235,7 +339,14 @@ export default function Dashboard({ token, onLogout }) {
         </div>
         <div className="layout">
           <div className="sidebar">
-            <h3>Restaurantes</h3>
+            <button
+              className="btn-primary"
+              style={{ width: '100%', marginBottom: 16, padding: '12px', fontSize: '1.05rem', background: scope === 'global' ? 'linear-gradient(45deg, #10b981, #047857)' : 'var(--accent-cyan)' }}
+              onClick={() => { setSelected(null); handleScopeChange('global'); }}
+            >
+              🏢 Situación Global Consolidada
+            </button>
+            <h3 style={{ marginTop: 0 }}>Restaurantes</h3>
             <div style={{ display: 'flex', gap: 8, marginBottom: 8 }}>
               <input placeholder="Buscar..." value={searchText} onChange={e => setSearchText(e.target.value)} />
               <button onClick={() => setSortOrder(s => s === 'asc' ? 'desc' : 'asc')}>{sortOrder === 'asc' ? 'A-Z' : 'Z-A'}</button>
@@ -261,8 +372,41 @@ export default function Dashboard({ token, onLogout }) {
             </div>
           </div>
           <div className="main">
-            <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center' }}>
-              <h3>KPIs</h3>
+            {/* PANEL DE INTELIGENCIA ARTIFICIAL OPENCLAW */}
+            <div className="ai-insights-panel">
+              <div className="ai-header" style={{ display: 'flex', alignItems: 'center', gap: 12, marginBottom: 0 }}>
+                <span className="ai-icon">🧠</span>
+                <div style={{ flex: 1 }}>
+                  <h4 style={{ margin: 0, color: 'var(--accent-cyan)', fontWeight: 600, fontSize: '1.1rem' }}>
+                    {scope === 'global' ? 'Grok AI / OpenClaw (Vista General)' : 'Grok AI / OpenClaw (Insights Locales)'}
+                  </h4>
+                  <div className="ai-pulse-indicator" style={{ display: 'flex', alignItems: 'center', gap: 6, fontSize: '0.7rem', color: aiLoading ? 'var(--accent-cyan)' : 'var(--accent-success)', marginTop: 4 }}>
+                    {aiLoading ? 'Sintetizando Inferencia...' : 'Motor LLM en línea'}
+                  </div>
+                </div>
+                {!aiLoading && !aiInsight && (
+                  <button className="btn-primary btn-sm" onClick={() => generateInsight(kpiData)}>Generar Insight Estratégico</button>
+                )}
+                {!aiLoading && aiInsight && (
+                  <button className="btn-secondary btn-sm" onClick={() => generateInsight(kpiData)}>↻ Recalcular</button>
+                )}
+              </div>
+              <div className="ai-content" style={{ marginTop: aiInsight || aiLoading ? 16 : 8 }}>
+                {aiLoading ? (
+                  <div style={{ color: 'var(--accent-cyan)', fontStyle: 'italic', fontSize: '0.9rem' }}>Conectando con clúster groq-llama-3...</div>
+                ) : aiInsight ? (
+                  <>
+                    <p style={{ margin: '0 0 12px 0', lineHeight: 1.6 }}><strong>Detección Algorítmica (xAI/Grok):</strong> {aiInsight.deteccion}</p>
+                    <div className="ai-recommendation"><strong>Inferencia Estratégica:</strong> {aiInsight.recomendacion}</div>
+                  </>
+                ) : (
+                  <p style={{ color: 'var(--text-muted)', fontSize: '0.9rem', fontStyle: 'italic', margin: 0 }}>Pulse el botón superior para enviar los {kpiData.length} KPIs en pantalla a la red de inferencia Groq.</p>
+                )}
+              </div>
+            </div>
+
+            <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', marginBottom: 20 }}>
+              <h3 style={{ margin: 0, fontWeight: 600, fontSize: '1.4rem' }}>Monitorización Estratégica</h3>
               <div style={{ display: 'flex', gap: 8, alignItems: 'center' }}>
                 <div>
                   <label className="small-muted">Perspectiva</label>
@@ -272,11 +416,10 @@ export default function Dashboard({ token, onLogout }) {
                   </select>
                 </div>
                 <div>
-                  <label className="small-muted">Alcance</label>
-                  <select value={scope} onChange={e => handleScopeChange(e.target.value)} style={{ marginLeft: 8 }}>
-                    <option value="restaurant">Restaurante</option>
-                    <option value="global">Global</option>
-                  </select>
+                  <label className="small-muted">Alcance de visualización</label>
+                  <span style={{ marginLeft: 8, fontWeight: 'bold', color: scope === 'global' ? 'var(--accent-cyan)' : '#fff' }}>
+                    {scope === 'global' ? 'Vista Consolidada (Franquicia)' : restaurants.find(r => r.id === selected)?.name || 'Local Individual'}
+                  </span>
                 </div>
               </div>
             </div>
@@ -355,12 +498,19 @@ export default function Dashboard({ token, onLogout }) {
           </div>
         </div>
       </div>
+      {activeKpiForTask && (
+        <TaskModal
+          kpi={activeKpiForTask}
+          onClose={() => setActiveKpiForTask(null)}
+          onTaskAdded={loadTasks}
+        />
+      )}
       {showCatalog && (
-        <div style={{ position: 'fixed', inset: 0, background: 'rgba(0,0,0,0.4)', display: 'flex', alignItems: 'center', justifyContent: 'center' }}>
-          <div style={{ background: '#fff', padding: 20, borderRadius: 8, width: '80%', maxHeight: '80%', overflow: 'auto' }}>
-            <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center' }}>
-              <h3>Catálogo de KPIs</h3>
-              <button onClick={() => setShowCatalog(false)}>Cerrar</button>
+        <div className="catalog-overlay">
+          <div className="catalog-modal glass-panel">
+            <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', marginBottom: 20 }}>
+              <h3 style={{ margin: 0 }}>Catálogo Maestro de KPIs</h3>
+              <button className="btn-secondary" onClick={() => setShowCatalog(false)}>✕ Cerrar</button>
             </div>
             <ul style={{ listStyle: 'none', padding: 0 }}>
               {catalogKpis.map(k => (
@@ -371,7 +521,7 @@ export default function Dashboard({ token, onLogout }) {
                       <div className="small-muted">{k.description}</div>
                     </div>
                     <div>
-                      <button onClick={() => addKpiToDashboard(k.id)}>Añadir</button>
+                      <button className="btn-primary btn-sm" onClick={() => addKpiToDashboard(k.id)}>+ Integrar al CMI</button>
                     </div>
                   </div>
                 </li>
@@ -381,25 +531,55 @@ export default function Dashboard({ token, onLogout }) {
         </div>
       )}
       {showAlerts && (
-        <div style={{ position: 'fixed', inset: 0, background: 'rgba(0,0,0,0.4)', display: 'flex', alignItems: 'center', justifyContent: 'center' }}>
-          <div style={{ background: '#fff', padding: 20, borderRadius: 8, width: '80%', maxHeight: '80%', overflow: 'auto' }}>
-            <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center' }}>
-              <h3>Alertas</h3>
-              <button onClick={() => setShowAlerts(false)}>Cerrar</button>
+        <div className="catalog-overlay" style={{ zIndex: 10000 }}>
+          <div className="catalog-modal glass-panel" style={{ width: '90%', maxWidth: '800px', maxHeight: '85vh', overflow: 'hidden', display: 'flex', flexDirection: 'column' }}>
+            <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', marginBottom: 20, paddingBottom: 15, borderBottom: '1px solid rgba(255,255,255,0.1)' }}>
+              <div style={{ display: 'flex', alignItems: 'center', gap: 12 }}>
+                <span style={{ fontSize: '1.5rem' }}>🚨</span>
+                <h3 style={{ margin: 0, color: 'var(--accent-cyan)', fontSize: '1.4rem' }}>Registro de Desviaciones (Audit Trail)</h3>
+              </div>
+              <button className="btn-secondary" onClick={() => setShowAlerts(false)}>✕ Cerrar</button>
             </div>
-            <ul style={{ listStyle: 'none', padding: 0 }}>
-              {alerts.map(a => (
-                <li key={a.id} style={{ borderBottom: '1px solid #eee', padding: 10 }}>
-                  <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center' }}>
-                    <div>
-                      <div style={{ fontWeight: 600 }}>{a.Kpi ? a.Kpi.name : 'KPI'}</div>
-                      <div className="small-muted">{a.message || a.condition || ''}</div>
-                    </div>
-                    <div className="small-muted">{a.created_at}</div>
-                  </div>
-                </li>
-              ))}
-            </ul>
+            <div style={{ overflowY: 'auto', flex: 1, paddingRight: 10 }}>
+              {alerts.length === 0 ? (
+                <div style={{ textAlign: 'center', padding: '40px', color: 'rgba(255,255,255,0.5)', fontStyle: 'italic' }}>No hay registros de anomalías en el sistema.</div>
+              ) : (
+                <ul style={{ listStyle: 'none', padding: 0, margin: 0, display: 'flex', flexDirection: 'column', gap: 12 }}>
+                  {alerts.map(a => (
+                    <li key={a.id} style={{
+                      background: 'rgba(255, 255, 255, 0.03)',
+                      border: '1px solid rgba(222, 75, 75, 0.3)',
+                      borderRadius: '8px',
+                      padding: '16px',
+                      transition: 'all 0.2s ease'
+                    }}>
+                      <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'flex-start' }}>
+                        <div>
+                          <div style={{ display: 'flex', alignItems: 'center', gap: 10, marginBottom: 8 }}>
+                            <span style={{ background: 'rgba(222, 75, 75, 0.2)', color: '#ff6b6b', padding: '2px 8px', borderRadius: '4px', fontSize: '0.75rem', fontWeight: 'bold' }}>CRITICAL ALARM</span>
+                            <div style={{ fontWeight: 600, fontSize: '1.1rem', color: '#fff' }}>{a.Kpi ? a.Kpi.name : 'Vigilancia Múltiple'}</div>
+                          </div>
+                          <div style={{ color: 'rgba(255,255,255,0.8)', fontSize: '0.95rem', lineHeight: 1.5 }}>
+                            <span style={{ color: 'var(--accent-cyan)' }}>Valor Anómalo:</span> <strong style={{ color: '#fff' }}>{a.recorded_value || '-'}</strong> | <span style={{ color: 'var(--accent-cyan)' }}>Meta Incumplida:</span> <strong style={{ color: '#fff' }}>{a.target_value || '-'}</strong> <br />
+                            <span style={{ color: '#ff6b6b' }}>Causa:</span> {a.condition || a.message || 'Desviación detectada por el bot OpenClaw'}
+                          </div>
+                        </div>
+                        <div style={{ textAlign: 'right' }}>
+                          <div className="small-muted" style={{ fontSize: '0.8rem', opacity: 0.7 }}>
+                            {new Date(a.created_at || a.createdAt).toLocaleString('es-ES', { dateStyle: 'medium', timeStyle: 'short' })}
+                          </div>
+                          <div style={{ marginTop: 12 }}>
+                            {a.Kpi && (
+                              <button className="btn-secondary btn-sm" onClick={() => { setShowAlerts(false); setActiveKpiForTask(a.Kpi); }} style={{ background: 'rgba(16, 185, 129, 0.2)', color: '#10b981', borderColor: 'transparent' }}>+ Emitir OKR</button>
+                            )}
+                          </div>
+                        </div>
+                      </div>
+                    </li>
+                  ))}
+                </ul>
+              )}
+            </div>
           </div>
         </div>
       )}

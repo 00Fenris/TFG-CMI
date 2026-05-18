@@ -15,8 +15,15 @@ const requireAuth = async (req, res, next) => {
     req.user = user;
     next();
   } catch (err) {
-    console.error('Auth error', err.message);
-    return res.status(401).json({ message: 'Invalid token' });
+    console.error('Auth error', err.name, err.message);
+    // Differentiate expired tokens vs invalid tokens
+    if (err.name === 'TokenExpiredError') {
+      return res.status(401).json({ message: 'Token expired' });
+    }
+    if (err.name === 'JsonWebTokenError') {
+      return res.status(401).json({ message: 'Invalid token' });
+    }
+    return res.status(401).json({ message: 'Authentication error' });
   }
 };
 

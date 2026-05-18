@@ -538,7 +538,7 @@ export default function Dashboard({ token, onLogout }) {
       )}
       {showAlerts && (
         <div className="catalog-overlay" style={{ zIndex: 10000 }}>
-          <div className="catalog-modal glass-panel" style={{ width: '90%', maxWidth: '800px', maxHeight: '85vh', overflow: 'hidden', display: 'flex', flexDirection: 'column' }}>
+          <div className="catalog-modal" style={{ background: '#0f172a', border: '1px solid rgba(255,255,255,0.1)', width: '90%', maxWidth: '800px', maxHeight: '85vh', overflow: 'hidden', display: 'flex', flexDirection: 'column' }}>
             <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', marginBottom: 20, paddingBottom: 15, borderBottom: '1px solid rgba(255,255,255,0.1)' }}>
               <div style={{ display: 'flex', alignItems: 'center', gap: 12 }}>
                 <span style={{ fontSize: '1.5rem' }}>🚨</span>

@@ -563,11 +563,11 @@ export default function Dashboard({ token, onLogout }) {
                         <div>
                           <div style={{ display: 'flex', alignItems: 'center', gap: 10, marginBottom: 8 }}>
                             <span style={{ background: 'rgba(222, 75, 75, 0.2)', color: '#ff6b6b', padding: '2px 8px', borderRadius: '4px', fontSize: '0.75rem', fontWeight: 'bold' }}>CRITICAL ALARM</span>
-                            <div style={{ fontWeight: 600, fontSize: '1.1rem', color: '#fff' }}>{a.Kpi ? a.Kpi.name : 'Vigilancia Múltiple'}</div>
+                            <div style={{ fontWeight: 600, fontSize: '1.1rem', color: '#fff' }}>{(a.Kpi || a.kpi) ? (a.Kpi || a.kpi).name : 'Vigilancia Múltiple'}</div>
                           </div>
                           <div style={{ color: 'rgba(255,255,255,0.8)', fontSize: '0.95rem', lineHeight: 1.5 }}>
-                            <span style={{ color: 'var(--accent-cyan)' }}>Valor Anómalo:</span> <strong style={{ color: '#fff' }}>{a.recorded_value || '-'}</strong> | <span style={{ color: 'var(--accent-cyan)' }}>Meta Incumplida:</span> <strong style={{ color: '#fff' }}>{a.target_value || '-'}</strong> <br />
-                            <span style={{ color: '#ff6b6b' }}>Causa:</span> {a.condition || a.message || 'Desviación detectada por el bot OpenClaw'}
+                            <span style={{ color: 'var(--accent-cyan)' }}>Valor Anómalo:</span> <strong style={{ color: '#fff' }}>{a.recorded_value ?? a.current_value ?? '-'}</strong> | <span style={{ color: 'var(--accent-cyan)' }}>Meta Incumplida:</span> <strong style={{ color: '#fff' }}>{a.target_value ?? '-'}</strong> <br />
+                            <span style={{ color: '#ff6b6b' }}>Causa:</span> <span style={{ color: '#fff' }}>{a.condition || a.message || 'Desviación detectada por el bot OpenClaw'}</span>
                           </div>
                         </div>
                         <div style={{ textAlign: 'right' }}>
@@ -575,8 +575,8 @@ export default function Dashboard({ token, onLogout }) {
                             {new Date(a.created_at || a.createdAt).toLocaleString('es-ES', { dateStyle: 'medium', timeStyle: 'short' })}
                           </div>
                           <div style={{ marginTop: 12 }}>
-                            {a.Kpi && (
-                              <button className="btn-secondary btn-sm" onClick={() => { setShowAlerts(false); setActiveKpiForTask(a.Kpi); }} style={{ background: 'rgba(16, 185, 129, 0.2)', color: '#10b981', borderColor: 'transparent' }}>+ Emitir OKR</button>
+                            {(a.Kpi || a.kpi) && (
+                              <button className="btn-secondary btn-sm" onClick={() => { setShowAlerts(false); setActiveKpiForTask(a.Kpi || a.kpi); }} style={{ background: 'rgba(16, 185, 129, 0.2)', color: '#10b981', borderColor: 'transparent' }}>+ Emitir OKR</button>
                             )}
                           </div>
                         </div>

@@ -1,10 +1,12 @@
-services:
+databases:
   # 1. Base de datos PostgreSQL gratuita
-  - type: psql
-    name: claunafood-db
+  - name: claunafood-db
+    databaseName: claunafood
+    user: clauna
     plan: free
-    postgresMajorVersion: 15
+    postgresMajorVersion: "15"
 
+services:
   # 2. Backend (Node.js)
   - type: web
     name: claunafood-backend
@@ -33,15 +35,8 @@ services:
     staticPublishPath: "./frontend/build"
     envVars:
       - key: REACT_APP_API_URL
-        fromService:
-          type: web
-          name: claunafood-backend
-          property: hostport
-        # We add https:// so the frontend calls the secure backend URL
-      - key: REACT_APP_API_URL
         value: https://claunafood-backend.onrender.com
     routes:
-      # Support React Router by redirecting all traffic to index.html
       - type: rewrite
         source: /*
         destination: /index.html

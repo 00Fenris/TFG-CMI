@@ -30,7 +30,6 @@ services:
     name: claunafood-frontend
     env: static
     plan: free
-    region: frankfurt
     buildCommand: "cd frontend && npm install && npm run build"
     staticPublishPath: "./frontend/build"
     envVars:

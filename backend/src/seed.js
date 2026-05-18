@@ -4,11 +4,11 @@ const modelsIndex = require('./models');
 const { sequelize, usingSequelize, User, Restaurant, Perspective, Objective, Kpi, KpiEntry, Task } = modelsIndex;
 
 async function seed() {
-  async function retry(fn, attempts = 6, delay = 200) {
+  async function retry(fn, attempts = 50, delay = 3000) {
     for (let i = 0; i < attempts; i++) {
       try { return await fn(); } catch (err) {
         if (i === attempts - 1) throw err;
-        console.warn('Retrying after error', err && err.message);
+        console.warn(`Retrying after error (${i+1}/${attempts}):`, err && err.message);
         await new Promise(r => setTimeout(r, delay));
       }
     }

@@ -7,7 +7,8 @@ try {
   const Seq = require('sequelize');
   Sequelize = Seq.Sequelize || Seq;
   if (process.env.DATABASE_URL) {
-    sequelize = new Sequelize(process.env.DATABASE_URL, { dialect: 'postgres', logging: false });
+    const dialectOptions = process.env.RENDER ? { ssl: { require: true, rejectUnauthorized: false } } : {};
+    sequelize = new Sequelize(process.env.DATABASE_URL, { dialect: 'postgres', logging: false, dialectOptions });
   } else {
     // Fallback to a local sqlite database for quick demo (may throw if sqlite3 binary not present)
     sequelize = new Sequelize({ dialect: 'sqlite', storage: path.join(__dirname, '../../db/dev.sqlite'), logging: false });

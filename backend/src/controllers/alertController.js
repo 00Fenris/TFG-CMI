@@ -43,8 +43,10 @@ const generateAutomaticAlerts = async () => {
         message,
         severity,
         current_value: current,
+        recorded_value: current,
         target_value: target,
-        ratio: Math.round(ratio * 100)
+        ratio: Math.round(ratio * 100),
+        created_at: new Date()
       });
     }
   }
@@ -94,6 +96,8 @@ exports.list = async (req, res) => {
         kpi: a.Kpi,
         message: a.message || a.condition,
         severity: 'stored',
+        recorded_value: a.recorded_value,
+        target_value: a.target_value,
         created_at: a.created_at
       }))
     ];

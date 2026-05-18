@@ -4,6 +4,7 @@ databases:
     databaseName: claunafood
     user: clauna
     plan: free
+    region: frankfurt
     postgresMajorVersion: "15"
 
 services:

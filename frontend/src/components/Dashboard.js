@@ -37,7 +37,14 @@ export default function Dashboard({ token, onLogout }) {
 
   const loadRestaurants = async () => {
     const res = await api.get('/restaurants');
-    const filtered = user.role === 'admin' ? res.data : res.data.filter(r => r.id === user.restaurant_id);
+    const mapped = res.data.map(r => {
+      let prettyName = r.name;
+      if (r.name.includes('Nuevo Local')) prettyName = 'Claunafood - LaRuqa (Nuevo Local)';
+      else if (r.name.includes('Salamanca')) prettyName = 'Claunafood - Ditaly (Salamanca)';
+      else if (r.name.includes('Zamora')) prettyName = 'Claunafood - La Mafia (Zamora)';
+      return { ...r, name: prettyName };
+    });
+    const filtered = user.role === 'admin' ? mapped : mapped.filter(r => r.id === user.restaurant_id);
     setRestaurants(filtered);
     if (filtered.length) {
       setSelected(filtered[0].id);

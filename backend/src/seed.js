@@ -16,7 +16,7 @@ async function seed() {
 
   if (usingSequelize && sequelize) {
     console.log('Syncing DB (force=true to clear old structure)...');
-    await retry(() => sequelize.sync({ force: true }), 6, 200);
+    await retry(() => sequelize.sync({ force: true }));
   } else {
     console.log('Using in-memory mock DB; skipping sync');
   }

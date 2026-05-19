@@ -33,7 +33,7 @@ Aplicando la estructura teórica de las seis dimensiones del macroentorno del mo
 *   Social: Se observa un cambio en los hábitos de consumo: el cliente busca experiencias gastronómicas (auge incesante del segmento de las hamburguesas gourmet donde compite LaRuqa) frente a la comida rápida tradicional. A esto se suma la dependencia crítica de las reseñas online como criterio de decisión. Por otro lado, la rotación laboral en hostelería en España supera el 75% anual [Randstad, 2024].
 *   Tecnológico: La caída de precios en herramientas de BI (Power BI, Looker) y la madurez de los TPV en la nube hacen viable por primera vez que una PYME hostelera implante un sistema de monitorización en tiempo real sin grandes inversiones.
 *   Ecológico: La presión normativa sobre el desperdicio alimentario (Ley 7/2022 de residuos) exige a los restaurantes documentar y reducir mermas, lo que refuerza la necesidad de medir la desviación del escandallo.
-*   Legal: Las comisiones de plataformas de reparto a domicilio (*delivery*) (hasta el 30% por pedido en Glovo o UberEats) se han convertido en un coste estructural que erosiona la rentabilidad del canal a domicilio.
+*   Legal: La aprobación de la **"Ley Rider" (Real Decreto-ley 9/2021)** en España obligó a las plataformas de reparto a contratar como asalariados a sus repartidores. Este cambio regulatorio encareció la estructura de costes de los operadores digitales (Glovo, UberEats), provocando una subida de sus comisiones comerciales a los restaurantes independientes (alcanzando hasta un 30% de recargo por ticket de *delivery*).
 
 ### 3.3.2 Análisis sectorial: las 5 Fuerzas de Porter aplicadas a Claunafood
 
@@ -103,7 +103,7 @@ Tabla 3.2. Matriz DAFO de Claunafood S.L.
 
 | | ANÁLISIS INTERNO (La Empresa) | ANÁLISIS EXTERNO (El Mercado y el Entorno) |
 | :--- | :--- | :--- |
-| **PUNTOS FUERTES** | **Fortalezas (F)**<br>1. Recetas estandarizadas por franquicia.<br>2. Ubicaciones premium con flujo constante.<br>3. Diversidad de formatos (volumen, ticket alto y marca propia). | **Oportunidades (O)**<br>1. Accesibilidad a tecnología BI de código abierto.<br>2. Tendencia hacia la fidelización basada en experiencias.<br>3. Capacidad de predecir demanda (calendario univesitario). |
+| **PUNTOS FUERTES** | **Fortalezas (F)**<br>1. Recetas estandarizadas por franquicia.<br>2. Ubicaciones premium con flujo constante.<br>3. Diversidad de formatos (volumen, ticket alto y marca propia). | **Oportunidades (O)**<br>1. Accesibilidad a tecnología BI de código abierto.<br>2. Tendencia hacia la fidelización basada en experiencias.<br>3. Capacidad de predecir demanda (calendario universitario). |
 | **PUNTOS DÉBILES** | **Debilidades (D)**<br>1. Falta de herramientas automáticas de control.<br>2. Alta rotación de camareros.<br>3. Descuadres mensuales de mermas y desperdicios. | **Amenazas (A)**<br>1. Inflación que comprime el margen de platos.<br>2. Competencia de locales modernizados.<br>3. Comisiones abusivas de plataformas *delivery*. |
 
 *Fuente: Elaboración propia a partir del análisis PESTEL y sectorial.*

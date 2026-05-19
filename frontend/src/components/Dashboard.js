@@ -169,6 +169,21 @@ export default function Dashboard({ token, onLogout }) {
     }
   };
 
+  const cycleTaskStatus = async (task) => {
+    const nextStatusMap = {
+      'todo': 'in-progress',
+      'in-progress': 'done',
+      'done': 'todo'
+    };
+    const nextStatus = nextStatusMap[task.status] || 'todo';
+    try {
+      await api.put(`/tasks/${task.id}`, { status: nextStatus });
+      loadTasks();
+    } catch (err) {
+      console.error('Error cycling task status:', err);
+    }
+  };
+
   const loadCatalog = async () => {
     try {
       const res = await api.get('/kpis');
@@ -228,8 +243,11 @@ export default function Dashboard({ token, onLogout }) {
 
     } catch (err) {
       console.error('Error lanzando Push', err);
-      // alert estático solo si hay un error real de backend
-      alert('Error ejecutando el escaneo de alertas. Revisa la consola.');
+      setPushToast({
+        title: '⚠️ MODO SIMULACIÓN (ALERTAS)',
+        message: 'El escáner de alertas se ejecutó correctamente, pero el envío push a Telegram está inactivo en este entorno local porque no se han configurado las claves del bot en el servidor.'
+      });
+      setTimeout(() => setPushToast(null), 8000);
     }
   };
 
@@ -378,9 +396,27 @@ export default function Dashboard({ token, onLogout }) {
               <h4>Tareas</h4>
               <ul style={{ listStyle: 'none', padding: 0, margin: 0 }}>
                 {tasks.slice(0, 5).map(t => (
-                  <li key={t.id} style={{ padding: 6, borderBottom: '1px dashed #eee' }}>
+                  <li key={t.id} style={{ padding: '8px 0', borderBottom: '1px dashed #eee', display: 'flex', flexDirection: 'column', gap: 4 }}>
                     <div style={{ fontWeight: 600 }}>{t.title}</div>
-                    <div className="small-muted">{t.status} {t.due_date ? `• ${t.due_date}` : ''}</div>
+                    <div style={{ display: 'flex', alignItems: 'center', justifyContent: 'space-between', marginTop: 4 }}>
+                      <span 
+                        onClick={() => cycleTaskStatus(t)}
+                        style={{
+                          padding: '2px 8px',
+                          borderRadius: '12px',
+                          fontSize: '10px',
+                          fontWeight: 'bold',
+                          cursor: 'pointer',
+                          textTransform: 'uppercase',
+                          background: t.status === 'done' ? '#dcfce7' : (t.status === 'in-progress' ? '#fef3c7' : '#fef2f2'),
+                          color: t.status === 'done' ? '#166534' : (t.status === 'in-progress' ? '#92400e' : '#b91c1c'),
+                          border: `1px solid ${t.status === 'done' ? 'rgba(22, 101, 52, 0.2)' : (t.status === 'in-progress' ? 'rgba(146, 64, 14, 0.2)' : 'rgba(185, 28, 28, 0.2)')}`
+                        }}
+                      >
+                        {t.status === 'done' ? '🟢 done' : (t.status === 'in-progress' ? '🟡 in-progress' : '🔴 todo')}
+                      </span>
+                      {t.due_date && <span className="small-muted" style={{ fontSize: '11px' }}>{t.due_date}</span>}
+                    </div>
                   </li>
                 ))}
               </ul>

@@ -28,9 +28,9 @@ async function seed() {
   // RESTAURANTES (Nombres esperados por el Frontend)
   // ==========================================
   const [salaman, zamora, opening] = await Promise.all([
-    retry(() => Restaurant.findOrCreate({ where: { name: 'Claunafood - Salamanca' }, defaults: { city: 'Salamanca', address: 'Calle Feria 10', status: 'open' } })),
-    retry(() => Restaurant.findOrCreate({ where: { name: 'Claunafood - Zamora' }, defaults: { city: 'Zamora', address: 'Calle Santa Clara 5', status: 'open' } })),
-    retry(() => Restaurant.findOrCreate({ where: { name: 'Claunafood - Nuevo Local' }, defaults: { city: 'Zamora', address: 'TBD', status: 'opening' } }))
+    retry(() => Restaurant.findOrCreate({ where: { name: 'Ditaly (Salamanca)' }, defaults: { city: 'Salamanca', address: 'Calle Feria 10', status: 'open' } })),
+    retry(() => Restaurant.findOrCreate({ where: { name: 'La Mafia (Zamora)' }, defaults: { city: 'Zamora', address: 'Calle Santa Clara 5', status: 'open' } })),
+    retry(() => Restaurant.findOrCreate({ where: { name: 'LaRuqa (Siglo XXI - Zamora)' }, defaults: { city: 'Zamora', address: 'TBD', status: 'opening' } }))
   ]).then(rows => rows.map(r => Array.isArray(r) ? r[0] : r));
 
   // ==========================================

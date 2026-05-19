@@ -18,11 +18,11 @@ El equipo humano es la base del CMI. En HORECA, la rotación alta y la falta de 
 
 Tabla 5.1. Matriz de la Perspectiva de Aprendizaje y Crecimiento.
 
-| Objetivo Estratégico | Indicador (KPI) | Fórmula de Cálculo | Meta (Target) | Frecuencia | Responsable | Estado en el sistema |
+| Objetivo Estratégico | Indicador (KPI) | Fórmula de Cálculo | Meta (Target) | Frecuencia | Responsable | Tipo de Indicador |
 | :--- | :--- | :--- | :--- | :--- | :--- | :--- |
-| Reducir la fuga de talento | Tasa de Rotación de Plantilla (%) | (Bajas / Plantilla media) × 100 | < 15% anual | Trimestral | Dirección / RR.HH. | Pre-cargado |
-| Garantizar formación antes de picos | Índice de Formación Cumplida | (Horas realizadas / Horas objetivo) × 100 | > 90% | Mensual | Encargado de local | Vía catálogo |
-| Medir el compromiso del equipo | eNPS interno (encuesta anónima de compromiso del equipo) | % Promotores (9-10) − % Detractores (0-6) | > +30 puntos | Semestral | Dirección General | Vía catálogo |
+| Reducir la fuga de talento | Tasa de Rotación de Plantilla (%) | (Bajas / Plantilla media) × 100 | < 15% anual | Trimestral | Dirección / RR.HH. | Resultado (Lag) |
+| Garantizar formación antes de picos | Índice de Formación Cumplida | (Horas realizadas / Horas objetivo) × 100 | > 90% | Mensual | Encargado de local | Inductor (Lead) |
+| Medir el compromiso del equipo | eNPS interno (encuesta anónima de compromiso del equipo) | % Promotores (9-10) − % Detractores (0-6) | > +30 puntos | Semestral | Dirección General | Inductor (Lead) |
 
 *Fuente: Elaboración propia.*
 
@@ -37,11 +37,11 @@ Con el equipo estabilizado, el foco pasa a la cocina y la sala. Los tres puntos 
 
 Tabla 5.2. Matriz de la Perspectiva de Procesos Internos.
 
-| Objetivo Estratégico | Indicador (KPI) | Fórmula de Cálculo | Meta (Target) | Frecuencia | Responsable | Estado en el sistema |
+| Objetivo Estratégico | Indicador (KPI) | Fórmula de Cálculo | Meta (Target) | Frecuencia | Responsable | Tipo de Indicador |
 | :--- | :--- | :--- | :--- | :--- | :--- | :--- |
-| Maximizar el uso de la sala | Rotación de Mesas (servicios/mesa) | Nº servicios / Nº mesas disponibles | > 2,5 servicios/turno | Semanal | Encargado de Sala | Pre-cargado |
-| Reducir el tiempo de espera | Lead Time de Servicio (min) | Tiempo entre entrada pedido TPV y entrega en mesa | < 45 min en Ditaly (Salamanca); < 12 min preparación | Diaria | Jefe de Cocina | Pre-cargado |
-| Detectar descuadres de inventario | Desviación del Escandallo (%) | (Coste real − Coste teórico franquicia) / Coste teórico × 100 | < 2% de desviación | Mensual | Responsable de Compras | Vía catálogo |
+| Maximizar el uso de la sala | Rotación de Mesas (servicios/mesa) | Nº servicios / Nº mesas disponibles | > 2,5 servicios/turno | Semanal | Encargado de Sala | Inductor (Lead) |
+| Reducir el tiempo de espera | Lead Time de Servicio (min) | Tiempo entre entrada pedido TPV y entrega en mesa | < 45 min en Ditaly (Salamanca); < 12 min preparación | Diaria | Jefe de Cocina | Inductor (Lead) |
+| Detectar descuadres de inventario | Desviación del Escandallo (%) | (Coste real − Coste teórico franquicia) / Coste teórico × 100 | < 2% de desviación | Mensual | Responsable de Compras | Inductor (Lead) |
 
 *Fuente: Elaboración propia.*
 
@@ -56,12 +56,12 @@ El cliente no sabe nada de los costes ni del escandallo. Percibe si el plato lle
 
 Tabla 5.3. Matriz de la Perspectiva del Cliente.
 
-| Objetivo Estratégico | Indicador (KPI) | Fórmula de Cálculo | Meta (Target) | Frecuencia | Responsable | Estado en el sistema |
+| Objetivo Estratégico | Indicador (KPI) | Fórmula de Cálculo | Meta (Target) | Frecuencia | Responsable | Tipo de Indicador |
 | :--- | :--- | :--- | :--- | :--- | :--- | :--- |
-| Mantener reputación digital alta | NPS Global | % Promotores (9-10) − % Detractores (0-6) | > +50 | Semanal | Marketing / Encargado | Pre-cargado |
-| Controlar el peso del delivery | % Ventas Delivery | (Ventas Glovo + UberEats / Ventas totales) × 100 | < 30% (por coste de comisiones) | Mensual | Dirección Corporativa | Pre-cargado |
-| Minimizar las quejas en sala | Tasa de Incidencias (%) | (Nº quejas o devoluciones / Total tickets) × 100 | < 1,5% | Diaria | Encargado de local | Vía catálogo |
-| Aumentar la recurrencia | % Clientes Recurrentes | (Tickets vinculados a cliente registrado / Total) × 100 | > 40% | Mensual | Dirección Corporativa | Vía catálogo |
+| Mantener reputación digital alta | NPS Global | % Promotores (9-10) − % Detractores (0-6) | > +50 | Semanal | Marketing / Encargado | Resultado (Lag) |
+| Controlar el peso del delivery | % Ventas Delivery | (Ventas Glovo + UberEats / Ventas totales) × 100 | < 30% (por coste de comisiones) | Mensual | Dirección Corporativa | Resultado (Lag) |
+| Minimizar las quejas en sala | Tasa de Incidencias (%) | (Nº quejas o devoluciones / Total tickets) × 100 | < 1,5% | Diaria | Encargado de local | Inductor (Lead) |
+| Aumentar la recurrencia | % Clientes Recurrentes | (Tickets vinculados a cliente registrado / Total) × 100 | > 40% | Mensual | Dirección Corporativa | Resultado (Lag) |
 
 *Fuente: Elaboración propia.*
 
@@ -76,15 +76,15 @@ La perspectiva financiera es el resultado de todo lo anterior. No se puede mejor
 
 Tabla 5.4. Matriz de la Perspectiva Financiera.
 
-| Objetivo Estratégico | Indicador (KPI) | Fórmula de Cálculo | Meta (Target) | Frecuencia | Responsable | Estado en el sistema |
+| Objetivo Estratégico | Indicador (KPI) | Fórmula de Cálculo | Meta (Target) | Frecuencia | Responsable | Tipo de Indicador |
 | :--- | :--- | :--- | :--- | :--- | :--- | :--- |
-| Medir la rentabilidad global | EBITDA Margin (%) | EBITDA / Ingresos netos × 100 | > 18% | Mensual | Dirección Financiera | Pre-cargado |
-| Proteger el margen operativo | Prime Cost (F&B + Labor) (%) | ((Coste Materia Prima + Coste Personal) / Ventas) × 100 | < 62% de supervivencia | Semanal | Dirección General | Pre-cargado |
-| Aumentar la rentabilidad por asiento | RevPASH (€) | Ingresos del período / (Asientos disponibles * Horas de servicio) | > 15.00 € (Ditaly) / > 18.00 € (La Mafia) | Diaria | Encargado de local | Pre-cargado |
+| Medir la rentabilidad global | EBITDA Margin (%) | EBITDA / Ingresos netos × 100 | > 18% | Mensual | Dirección Financiera | Resultado (Lag) |
+| Proteger el margen operativo | Prime Cost (F&B + Labor) (%) | ((Coste Materia Prima + Coste Personal) / Ventas) × 100 | < 62% de supervivencia | Semanal | Dirección General | Resultado (Lag) |
+| Aumentar la rentabilidad por asiento | RevPASH (€) | Ingresos del período / (Asientos disponibles * Horas de servicio) | > 15.00 € (Ditaly) / > 18.00 € (La Mafia) | Diaria | Encargado de local | Resultado (Lag) |
 
 *Fuente: Elaboración propia.*
 
-> Nota: El umbral crítico del sistema se activa cuando el Prime Cost combinado supera el 62% sobre ingresos, que es el límite de supervivencia operativa establecido por Dopson y Hayes (2015). Esta condición se monitoriza de forma combinada en la vista financiera del panel.
+El umbral crítico de control estratégico se establece cuando la suma combinada de costes de personal y materia prima (Prime Cost) supera el 62% de la facturación. De acuerdo con el marco teórico de Dopson y Hayes (2015), sobrepasar dicho límite neutraliza el margen de contribución necesario para sufragar los costes fijos de la estructura, convirtiéndose en un disparador inmediato para la toma de medidas correctoras en la gestión operativa del restaurante.
 
 Iniciativas vinculadas:
 

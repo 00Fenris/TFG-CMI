@@ -137,25 +137,43 @@ async function seed() {
   const kpisZam = await createKpisForRestaurant(zamora, managerZam.id);
 
   // ==========================================
-  // KPI ENTRIES (HISTÓRICO Q3/Q4 2024 DE LA MEMORIA)
+  // KPI ENTRIES (HISTÓRICO DINÁMICO HASTA EL DÍA DE HOY)
   // ==========================================
-  const months = ['2024-07-01', '2024-08-01', '2024-09-01', '2024-10-01', '2024-11-01', '2024-12-01'];
+  const start = new Date(2024, 6, 1); // Julio 2024
+  const end = new Date(); // Fecha actual (Mayo 2026)
+  const months = [];
+  let current = new Date(start);
+  while (current <= end) {
+    const yyyy = current.getFullYear();
+    const mm = String(current.getMonth() + 1).padStart(2, '0');
+    months.push(`${yyyy}-${mm}-01`);
+    current.setMonth(current.getMonth() + 1);
+  }
   
   // Función para poblar un KPI con una tendencia que parte exactamente del valor inicial
   const seedKpiHistory = async (kpi, managerId, baseTrend) => {
+    let finalValue = kpi.current_value;
     for (let i = 0; i < months.length; i++) {
-      // Simula mejora progresiva partiendo del valor actual en el mes 0 (Julio 2024)
-      let val = Number(kpi.current_value) + (baseTrend * i);
+      // Simula mejora progresiva partiendo del valor actual con una pequeña fluctuación aleatoria para realismo
+      let fluctuation = (Math.random() - 0.5) * 1.2; 
+      let val = Number(kpi.current_value) + (baseTrend * i) + fluctuation;
       if (kpi.unit === 'percent' && val > 100) val = 100;
       if (val < 0) val = 0;
+      
+      const finalValNum = Number(val.toFixed(2));
+      if (i === months.length - 1) {
+        finalValue = finalValNum;
+      }
       
       await retry(() => KpiEntry.create({ 
         kpi_id: kpi.id, 
         recorded_by: managerId, 
-        value: Number(val.toFixed(2)), 
+        value: finalValNum, 
         period_start: months[i] 
       }));
     }
+    // Actualizamos el valor actual del KPI al último valor histórico generado
+    await retry(() => kpi.update({ current_value: finalValue }));
   };
 
   // Poblar históricos de los 24 KPIs
@@ -184,7 +202,7 @@ async function seed() {
   console.log('   - 3 Restaurantes (Salamanca, Zamora, Nuevo Local)');
   console.log('   - 11 Objetivos Estratégicos (Mapeados Cap 4)');
   console.log('   - 24 KPIs (Los 12 exactos del TFG por local operativo)');
-  console.log('   - Histórico de 6 meses (Q3-Q4 2024 adaptado a la memoria)');
+  console.log(`   - Histórico dinámico (${months.length} meses, de Julio 2024 a Hoy)`);
 }
 
 if (require.main === module) {

@@ -100,4 +100,29 @@ El sistema diferencia dos niveles de acceso:
 1.  **Vista operativa para encargados de local:** Un panel simplificado y reactivo que muestra únicamente los indicadores del turno en curso: tiempo medio de servicio, alertas de Lead Time superado e incidencias registradas en sala. El encargado no necesita ver los datos financieros consolidados de toda la empresa; necesita saber si el local está funcionando bien en ese momento.
 2.  **Vista directiva para la gerencia de Claunafood:** Un panel consolidado con todos los KPIs de las cuatro perspectivas, que permite comparar el rendimiento entre locales y detectar desviaciones en los costes o la facturación antes de que afecten al cierre mensual. Este nivel incluye los gráficos de evolución histórica y el sistema de alertas automáticas cuando algún indicador cruza su umbral crítico.
 
-Figura 5.1. Esquema conceptual de los dos niveles de acceso al CMI de Claunafood. Fuente: Elaboración propia.
+```mermaid
+graph TD
+    User([Usuario]) --> Login{Autenticación}
+    
+    Login -->|Gerente General / Admin| VistaDirectiva[Nivel 1: Vista Directiva - Gerencial]
+    Login -->|Encargado de Local| VistaOperativa[Nivel 2: Vista Operativa - Local]
+    
+    subgraph VistaDirectiva [Panel Consolidado - Toma de Decisiones]
+        D1[Comparativa de Locales]
+        D2[Histórico de KPIs de 4 Perspectivas]
+        D3[Sistema de Alertas Críticas & Push]
+        D4[Evolución Financiera y EBITDA]
+    end
+    
+    subgraph VistaOperativa [Panel Reactivo - Turno en Curso]
+        O1[Lead Time medio del servicio]
+        O2[Alertas de cocina en tiempo real]
+        O3[Registro inmediato de incidencias]
+        O4[Módulo de Tareas asignadas]
+    end
+    
+    style VistaDirectiva fill:#f5f5ff,stroke:#33f,stroke-width:1px
+    style VistaOperativa fill:#f5fff5,stroke:#3f3,stroke-width:1px
+```
+
+*Figura 5.1. Esquema conceptual de los dos niveles de acceso al CMI de Claunafood. Fuente: Elaboración propia.*

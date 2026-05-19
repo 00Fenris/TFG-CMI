@@ -203,3 +203,15 @@ El funcionamiento es el siguiente: los KPIs diseñados en el Capítulo 4 se divi
 
 Esta arquitectura tiene dos ventajas directas para Claunafood. En primer lugar, permite que el panel de los encargados no esté saturado de datos desde el primer día (aparecen solo los indicadores más críticos, y el equipo puede ir incorporando más métricas conforme se familiariza con el sistema). En segundo lugar, hace que el sistema sea ampliable: si en el futuro la dirección decide monitorizar un nuevo indicador (por ejemplo, el consumo energético por servicio o la tasa de conversión de la app de delivery), solo es necesario crearlo en la base de datos y asignarlo a los restaurantes correspondientes, sin tocar el código de la aplicación.
 
+### 6.7.1 Módulo de edición de parámetros y metas (Targets) en caliente
+
+Para que el Cuadro de Mando Integral no se convierta en una foto estática de la empresa, sino en un sistema de control de gestión vivo y reactivo, el software implementa un panel de configuración de parámetros accesible desde la vista detallada de cada KPI (`KpiDetail.js`).
+
+Esta funcionalidad se rige por las siguientes características de control:
+* **Privilegios de Administración (Admin Only):** El formulario de modificación de parámetros solo es visible y editable para los usuarios con rol de Dirección General (administradores). Los encargados de local (rol manager) únicamente ven la información del KPI de manera pasiva y el formulario de inserción de registros diarios, evitando desajustes accidentales en los objetivos corporativos.
+* **Campos de Ajuste Dinámico:** El administrador puede modificar en tiempo real el nombre del indicador, su descripción y fórmula, pero lo más relevante es el ajuste dinámico de metas:
+    * **Meta del Indicador (Target Value):** Modifica el valor objetivo del KPI para que las barras de progreso del panel de control se recalculen de inmediato.
+    * **Condición de Alarma:** Permite configurar si la alarma del CMI se activa cuando el valor actual está por debajo del target (ej. NPS) o por encima del target (ej. Food Cost).
+    * **Límite de Alarma (Threshold Ratio):** Define el factor de tolerancia antes de disparar la alerta (por ejemplo, `0.95` para alarmar si el valor baja del 95% del target, o `1.05` para alarmar si los costes superan el 105% de la meta fijada).
+* **Persistencia Inmediata:** Al guardar los cambios, la aplicación web realiza una petición `PUT /kpis/:id` hacia el backend. El servidor actualiza la base de datos en caliente y el dashboard refleja el nuevo estado de cumplimiento y colores de los semáforos de alerta de forma inmediata.
+

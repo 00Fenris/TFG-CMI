@@ -25,7 +25,7 @@ async function seed() {
   const passwordHash = bcrypt.hashSync(passwordPlain, 10);
 
   // ==========================================
-  // RESTAURANTES
+  // RESTAURANTES (Nombres esperados por el Frontend)
   // ==========================================
   const [salaman, zamora, opening] = await Promise.all([
     retry(() => Restaurant.findOrCreate({ where: { name: 'Claunafood - Salamanca' }, defaults: { city: 'Salamanca', address: 'Calle Feria 10', status: 'open' } })),
@@ -92,33 +92,43 @@ async function seed() {
   // 12 KPIs EXACTOS DEL TFG POR RESTAURANTE
   // ==========================================
   const createKpisForRestaurant = async (rest, managerId) => {
-    // 1. Tasa de Rotación (Aprendizaje)
-    const kpi1 = await retry(() => Kpi.create({ name: 'Tasa de Rotación', description: '(Bajas/Plantilla Media)*100', formula: 'bajas/plantilla*100', frequency: 'monthly', unit: 'percent', current_value: rest.name.includes('Zamora') ? 14 : 18, target_value: 15, alert_condition: 'above', alert_threshold: 1.1, owner_id: managerId, objective_id: objA2.id, restaurant_id: rest.id }));
+    const isZamora = rest.name.includes('Zamora');
+    
+    // 1. Tasa de Rotación (Aprendizaje) - Salamanca empieza en 22.5% (Tabla 3.1)
+    const kpi1 = await retry(() => Kpi.create({ name: 'Tasa de Rotación', description: '(Bajas/Plantilla Media)*100', formula: 'bajas/plantilla*100', frequency: 'monthly', unit: 'percent', current_value: isZamora ? 14.0 : 22.5, target_value: 15.0, alert_condition: 'above', alert_threshold: 1.1, owner_id: managerId, objective_id: objA2.id, restaurant_id: rest.id }));
+    
     // 2. Índice de Formación (Aprendizaje)
-    const kpi2 = await retry(() => Kpi.create({ name: 'Índice de Formación', description: 'Personal con formación al día', formula: 'formados/total*100', frequency: 'quarterly', unit: 'percent', current_value: rest.name.includes('Zamora') ? 95 : 85, target_value: 100, alert_condition: 'below', alert_threshold: 0.85, owner_id: managerId, objective_id: objA1.id, restaurant_id: rest.id }));
+    const kpi2 = await retry(() => Kpi.create({ name: 'Índice de Formación', description: 'Personal con formación al día', formula: 'formados/total*100', frequency: 'quarterly', unit: 'percent', current_value: isZamora ? 95.0 : 85.0, target_value: 100.0, alert_condition: 'below', alert_threshold: 0.85, owner_id: managerId, objective_id: objA1.id, restaurant_id: rest.id }));
+    
     // 3. eNPS (Aprendizaje)
-    const kpi3 = await retry(() => Kpi.create({ name: 'eNPS', description: 'Employee Net Promoter Score', formula: 'Encuesta interna 1-10', frequency: 'monthly', unit: 'number', current_value: rest.name.includes('Zamora') ? 72 : 64, target_value: 70, alert_condition: 'below', alert_threshold: 0.90, owner_id: managerId, objective_id: objA3.id, restaurant_id: rest.id }));
+    const kpi3 = await retry(() => Kpi.create({ name: 'eNPS', description: 'Employee Net Promoter Score', formula: 'Encuesta interna 1-10', frequency: 'monthly', unit: 'number', current_value: isZamora ? 72.0 : 64.0, target_value: 70.0, alert_condition: 'below', alert_threshold: 0.90, owner_id: managerId, objective_id: objA3.id, restaurant_id: rest.id }));
     
     // 4. Rotación de Mesas (Procesos)
-    const kpi4 = await retry(() => Kpi.create({ name: 'Rotación de Mesas', description: 'Tickets / Número de mesas', formula: 'tickets/mesas', frequency: 'weekly', unit: 'number', current_value: rest.name.includes('Zamora') ? 2.8 : 2.2, target_value: 2.5, alert_condition: 'below', alert_threshold: 0.90, owner_id: managerId, objective_id: objP3.id, restaurant_id: rest.id }));
+    const kpi4 = await retry(() => Kpi.create({ name: 'Rotación de Mesas', description: 'Tickets / Número de mesas', formula: 'tickets/mesas', frequency: 'weekly', unit: 'number', current_value: isZamora ? 2.8 : 2.2, target_value: 2.5, alert_condition: 'below', alert_threshold: 0.90, owner_id: managerId, objective_id: objP3.id, restaurant_id: rest.id }));
+    
     // 5. Lead Time de Cocina (Procesos)
-    const kpi5 = await retry(() => Kpi.create({ name: 'Lead Time de Cocina', description: 'Minutos desde TPV a plato servido', formula: 'AVG(tiempo)', frequency: 'weekly', unit: 'number', current_value: rest.name.includes('Zamora') ? 14 : 18, target_value: 15, alert_condition: 'above', alert_threshold: 1.15, owner_id: managerId, objective_id: objP2.id, restaurant_id: rest.id }));
+    const kpi5 = await retry(() => Kpi.create({ name: 'Lead Time de Cocina', description: 'Minutos desde TPV a plato servido', formula: 'AVG(tiempo)', frequency: 'weekly', unit: 'number', current_value: isZamora ? 14.0 : 18.0, target_value: 15.0, alert_condition: 'above', alert_threshold: 1.15, owner_id: managerId, objective_id: objP2.id, restaurant_id: rest.id }));
+    
     // 6. Desviación Escandallo (Procesos)
-    const kpi6 = await retry(() => Kpi.create({ name: 'Desviación Escandallo', description: 'Merma sobre coste teórico', formula: '(real-teorico)/teorico', frequency: 'monthly', unit: 'percent', current_value: rest.name.includes('Zamora') ? 1.5 : 3.5, target_value: 2.0, alert_condition: 'above', alert_threshold: 1.25, owner_id: managerId, objective_id: objP1.id, restaurant_id: rest.id }));
+    const kpi6 = await retry(() => Kpi.create({ name: 'Desviación Escandallo', description: 'Merma sobre coste teórico', formula: '(real-teorico)/teorico', frequency: 'monthly', unit: 'percent', current_value: isZamora ? 1.5 : 3.5, target_value: 2.0, alert_condition: 'above', alert_threshold: 1.25, owner_id: managerId, objective_id: objP1.id, restaurant_id: rest.id }));
 
-    // 7. NPS Global (Cliente)
-    const kpi7 = await retry(() => Kpi.create({ name: 'NPS Global', description: '% Promotores - % Detractores', formula: 'promotores-detractores', frequency: 'monthly', unit: 'number', current_value: rest.name.includes('Zamora') ? 68 : 45, target_value: 50, alert_condition: 'below', alert_threshold: 0.90, owner_id: managerId, objective_id: objC1.id, restaurant_id: rest.id }));
+    // 7. NPS Global (Cliente) - Salamanca empieza en 65 (Tabla 3.1)
+    const kpi7 = await retry(() => Kpi.create({ name: 'NPS Global', description: '% Promotores - % Detractores', formula: 'promotores-detractores', frequency: 'monthly', unit: 'number', current_value: isZamora ? 68.0 : 65.0, target_value: 75.0, alert_condition: 'below', alert_threshold: 0.90, owner_id: managerId, objective_id: objC1.id, restaurant_id: rest.id }));
+    
     // 8. % Ventas Delivery (Cliente)
-    const kpi8 = await retry(() => Kpi.create({ name: '% Ventas Delivery', description: 'Ingresos delivery / Totales', formula: 'delivery/total*100', frequency: 'monthly', unit: 'percent', current_value: rest.name.includes('Zamora') ? 25 : 18, target_value: 20, alert_condition: 'below', alert_threshold: 0.85, owner_id: managerId, objective_id: objC2.id, restaurant_id: rest.id }));
+    const kpi8 = await retry(() => Kpi.create({ name: '% Ventas Delivery', description: 'Ingresos delivery / Totales', formula: 'delivery/total*100', frequency: 'monthly', unit: 'percent', current_value: isZamora ? 25.0 : 18.0, target_value: 20.0, alert_condition: 'below', alert_threshold: 0.85, owner_id: managerId, objective_id: objC2.id, restaurant_id: rest.id }));
+    
     // 9. Tasa de Incidencias (Cliente)
-    const kpi9 = await retry(() => Kpi.create({ name: 'Tasa de Incidencias', description: 'Quejas / Total tickets', formula: 'quejas/tickets*100', frequency: 'monthly', unit: 'percent', current_value: rest.name.includes('Zamora') ? 0.8 : 1.5, target_value: 1.0, alert_condition: 'above', alert_threshold: 1.20, owner_id: managerId, objective_id: objC2.id, restaurant_id: rest.id }));
+    const kpi9 = await retry(() => Kpi.create({ name: 'Tasa de Incidencias', description: 'Quejas / Total tickets', formula: 'quejas/tickets*100', frequency: 'monthly', unit: 'percent', current_value: isZamora ? 0.8 : 1.5, target_value: 1.0, alert_condition: 'above', alert_threshold: 1.20, owner_id: managerId, objective_id: objC2.id, restaurant_id: rest.id }));
 
-    // 10. EBITDA Margin (Financiera)
-    const kpi10 = await retry(() => Kpi.create({ name: 'EBITDA Margin', description: 'Beneficio neto / Ventas', formula: 'ebitda/ventas*100', frequency: 'monthly', unit: 'percent', current_value: rest.name.includes('Zamora') ? 19.5 : 16.5, target_value: 18.0, alert_condition: 'below', alert_threshold: 0.90, owner_id: managerId, objective_id: objF4.id, restaurant_id: rest.id }));
-    // 11. Prime Cost (Financiera)
-    const kpi11 = await retry(() => Kpi.create({ name: 'Prime Cost (F&B + Labor)', description: 'Coste directo operativo', formula: 'food_cost+labor_cost', frequency: 'monthly', unit: 'percent', current_value: rest.name.includes('Zamora') ? 59.5 : 65.2, target_value: 62.0, alert_condition: 'above', alert_threshold: 1.05, owner_id: managerId, objective_id: objF1.id, restaurant_id: rest.id }));
+    // 10. EBITDA Margin (Financiera) - Salamanca empieza en 15.0% (Tabla 3.1)
+    const kpi10 = await retry(() => Kpi.create({ name: 'EBITDA Margin', description: 'Beneficio neto / Ventas', formula: 'ebitda/ventas*100', frequency: 'monthly', unit: 'percent', current_value: isZamora ? 19.5 : 15.0, target_value: 18.0, alert_condition: 'below', alert_threshold: 0.90, owner_id: managerId, objective_id: objF4.id, restaurant_id: rest.id }));
+    
+    // 11. Prime Cost (Financiera) - Salamanca empieza en 65.0% (Tabla 3.1)
+    const kpi11 = await retry(() => Kpi.create({ name: 'Prime Cost (F&B + Labor)', description: 'Coste directo operativo', formula: 'food_cost+labor_cost', frequency: 'monthly', unit: 'percent', current_value: isZamora ? 59.5 : 65.0, target_value: 62.0, alert_condition: 'above', alert_threshold: 1.05, owner_id: managerId, objective_id: objF1.id, restaurant_id: rest.id }));
+    
     // 12. RevPASH (Financiera)
-    const kpi12 = await retry(() => Kpi.create({ name: 'RevPASH', description: 'Ingresos por asiento disponible/hora', formula: 'ingresos/(asientos*horas)', frequency: 'weekly', unit: 'currency', current_value: rest.name.includes('Zamora') ? 16.5 : 13.8, target_value: 15.0, alert_condition: 'below', alert_threshold: 0.90, owner_id: managerId, objective_id: objF3.id, restaurant_id: rest.id }));
+    const kpi12 = await retry(() => Kpi.create({ name: 'RevPASH', description: 'Ingresos por asiento disponible/hora', formula: 'ingresos/(asientos*horas)', frequency: 'weekly', unit: 'currency', current_value: isZamora ? 16.5 : 13.8, target_value: 15.0, alert_condition: 'below', alert_threshold: 0.90, owner_id: managerId, objective_id: objF3.id, restaurant_id: rest.id }));
 
     return [kpi1, kpi2, kpi3, kpi4, kpi5, kpi6, kpi7, kpi8, kpi9, kpi10, kpi11, kpi12];
   };
@@ -127,15 +137,15 @@ async function seed() {
   const kpisZam = await createKpisForRestaurant(zamora, managerZam.id);
 
   // ==========================================
-  // KPI ENTRIES (HISTÓRICO DE EJEMPLO)
+  // KPI ENTRIES (HISTÓRICO Q3/Q4 2024 DE LA MEMORIA)
   // ==========================================
-  const months = ['2025-09-01', '2025-10-01', '2025-11-01', '2025-12-01', '2026-01-01'];
+  const months = ['2024-07-01', '2024-08-01', '2024-09-01', '2024-10-01', '2024-11-01', '2024-12-01'];
   
-  // Función para poblar un KPI con una tendencia aleatoria alrededor del valor actual
+  // Función para poblar un KPI con una tendencia que parte exactamente del valor inicial
   const seedKpiHistory = async (kpi, managerId, baseTrend) => {
     for (let i = 0; i < months.length; i++) {
-      // Simula mejora o empeoramiento según la tendencia
-      let val = Number(kpi.current_value) + (baseTrend * (months.length - 1 - i));
+      // Simula mejora progresiva partiendo del valor actual en el mes 0 (Julio 2024)
+      let val = Number(kpi.current_value) + (baseTrend * i);
       if (kpi.unit === 'percent' && val > 100) val = 100;
       if (val < 0) val = 0;
       
@@ -150,23 +160,23 @@ async function seed() {
 
   // Poblar históricos de los 24 KPIs
   for (const kpi of kpisSal) {
-    // Salamanca está peor, simulamos que ha ido empeorando ligeramente
-    const trend = kpi.alert_condition === 'above' ? -0.5 : 0.5; // si higher is worse, trend negative means in past it was better
+    // Salamanca mejora progresivamente (los costes bajan, los márgenes/satisfacción suben)
+    const trend = kpi.alert_condition === 'above' ? -0.5 : 0.5;
     await seedKpiHistory(kpi, managerSal.id, trend);
   }
   for (const kpi of kpisZam) {
-    // Zamora está mejor, simulamos mejora constante
-    const trend = kpi.alert_condition === 'above' ? 0.3 : -0.3; // si higher is better, past was worse (-0.3)
+    // Zamora mejora a un ritmo menor ya que parte de una mejor posición
+    const trend = kpi.alert_condition === 'above' ? -0.3 : 0.3;
     await seedKpiHistory(kpi, managerZam.id, trend);
   }
 
   // ==========================================
   // TAREAS (ACCIONES DE MEJORA - CAME)
   // ==========================================
-  await retry(() => Task.create({ title: 'Revisar escandallos de pizzas premium', description: 'Ajustar receta por exceso de mermas', owner_id: managerSal.id, assigned_to: managerSal.id, objective_id: objP1.id, due_date: '2026-02-15', status: 'in-progress', priority: 'high' }));
-  await retry(() => Task.create({ title: 'Nueva campaña en UberEats', description: 'Incrementar % Ventas Delivery', owner_id: admin.id, assigned_to: managerZam.id, objective_id: objC2.id, due_date: '2026-02-28', status: 'todo', priority: 'normal' }));
-  await retry(() => Task.create({ title: 'Encuesta anónima trimestral (eNPS)', description: 'Enviar formularios QR al personal', owner_id: managerZam.id, assigned_to: managerZam.id, objective_id: objA3.id, due_date: '2026-02-20', status: 'in-progress', priority: 'high' }));
-  await retry(() => Task.create({ title: 'Reestructurar turnos viernes noche', description: 'Para mejorar el Prime Cost por debajo del 62%', owner_id: admin.id, assigned_to: managerSal.id, objective_id: objF1.id, due_date: '2026-03-01', status: 'todo', priority: 'normal' }));
+  await retry(() => Task.create({ title: 'Revisar escandallos de pizzas premium', description: 'Ajustar receta por exceso de mermas', owner_id: managerSal.id, assigned_to: managerSal.id, objective_id: objP1.id, due_date: '2024-09-15', status: 'in-progress', priority: 'high' }));
+  await retry(() => Task.create({ title: 'Nueva campaña en UberEats', description: 'Incrementar % Ventas Delivery', owner_id: admin.id, assigned_to: managerZam.id, objective_id: objC2.id, due_date: '2024-10-31', status: 'todo', priority: 'normal' }));
+  await retry(() => Task.create({ title: 'Encuesta anónima trimestral (eNPS)', description: 'Enviar formularios QR al personal', owner_id: managerZam.id, assigned_to: managerZam.id, objective_id: objA3.id, due_date: '2024-11-20', status: 'in-progress', priority: 'high' }));
+  await retry(() => Task.create({ title: 'Reestructurar turnos viernes noche', description: 'Para mejorar el Prime Cost por debajo del 62%', owner_id: admin.id, assigned_to: managerSal.id, objective_id: objF1.id, due_date: '2024-12-15', status: 'todo', priority: 'normal' }));
 
   console.log('✅ Seed (V2 TFG Alineado) finished successfully!');
   console.log('');
@@ -174,7 +184,7 @@ async function seed() {
   console.log('   - 3 Restaurantes (Salamanca, Zamora, Nuevo Local)');
   console.log('   - 11 Objetivos Estratégicos (Mapeados Cap 4)');
   console.log('   - 24 KPIs (Los 12 exactos del TFG por local operativo)');
-  console.log('   - Histórico de 5 meses (Q3-Q4 2024 adaptado)');
+  console.log('   - Histórico de 6 meses (Q3-Q4 2024 adaptado a la memoria)');
 }
 
 if (require.main === module) {

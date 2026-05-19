@@ -4,11 +4,11 @@ Con los indicadores ya justificados, este capítulo baja al detalle: cómo se ap
 
 ## 5.1 Metodología de fijación de metas (Targets)
 
-Sin metas numéricas, un cuadro de mando es decoración. Los targets de cada KPI se han fijado a partir de tres fuentes, no de forma arbitraria:
+Sin metas numéricas, un cuadro de mando no es operativo. Para fijar los objetivos de cada KPI nos hemos basado en tres fuentes:
 
-*   **Estándares académicos del sector:** Proporcionan los umbrales de referencia aplicables a cualquier restaurante de franquicia. El caso más claro es el límite del 62% del Prime Cost (Dopson y Hayes, 2015), que se convierte en la línea roja del sistema. A partir de ahí, si el Food Cost objetivo es del 30%, el Labor Cost no puede superar el 32% para mantenerse dentro del margen. Del mismo modo, el target de NPS por encima de +50 se basa en el umbral que Reichheld (2003) establece para considerar que una base de clientes genera prescripción activa y no solo consumo pasivo.
-*   **Condiciones contractuales de la franquicia:** Los tiempos de servicio están parcialmente condicionados por los procesos que impone la marca. El horneado de la pizza en Ditaly (Salamanca) tiene un tiempo mínimo fijo de 12 minutos, lo que convierte el Lead Time de preparación objetivo en un dato impuesto por el contrato de franquicia, no estimado libremente. Este condicionante se traslada directamente al target de la tabla de Procesos Internos.
-*   **Datos históricos internos de Claunafood (línea base de 2024):** Para las métricas de equipo y financieras, los cierres de 2024 proporcionan el punto de partida real desde el que se fijan los objetivos de mejora. Con una tasa de rotación de plantilla del 22,5% en 2024, el target del 15% anual representa una reducción ambiciosa pero alcanzable en dos ejercicios. Con un EBITDA del 15% in 2024, el objetivo del 18% marca la senda de crecimiento necesaria para autofinanciar la expansión de LaRuqa (Siglo XXI - Zamora) sin recurrir a deuda externa. Con un Food Cost del 35%, el target del 30% exige disciplina en las compras y reducción de mermas, pero es coherente con los estándares de la franquicia cuando el escandallo se aplica correctamente.
+*   **Estándares del sector:** Son las referencias habituales en restauración. La más importante es mantener el Prime Cost por debajo del 62% (Dopson y Hayes, 2015). Si fijamos el coste de materia prima (Food Cost) en el 30%, el coste de personal (Labor Cost) no debe superar el 32% para que el negocio siga siendo viable. Para el NPS, el objetivo de superar los +50 puntos se basa en la métrica de Reichheld (2003) para asegurar que contamos con una base sólida de clientes promotores que recomiendan el restaurante de forma activa.
+*   **Contratos de franquicia:** Los tiempos de servicio dependen en gran parte de las normas que impone la marca. Por ejemplo, en Ditaly (Salamanca) el horneado de la pizza requiere un mínimo de 12 minutos. Por tanto, el tiempo de preparación objetivo viene condicionado por la propia operativa de la franquicia y no se puede recortar a voluntad.
+*   **Histórico de Claunafood (cierre de 2024):** Los datos reales de 2024 nos sirven como base para marcar las metas de mejora. Al registrar una rotación de plantilla del 22,5% en 2024, bajarla al 15% anual es una meta realista para los próximos dos años. Con un EBITDA del 15% en 2024, subir al 18% nos permitirá generar la caja suficiente para pagar la apertura de LaRuqa (Siglo XXI - Zamora) sin tener que pedir préstamos. Por último, reducir el Food Cost del 35% al 30% exige más control sobre las compras y las mermas, pero es factible si se aplican de forma rigurosa las fichas de escandallo.
 
 A continuación, las cuatro perspectivas con sus indicadores.
 
@@ -84,7 +84,7 @@ Tabla 5.4. Matriz de la Perspectiva Financiera.
 
 *Fuente: Elaboración propia.*
 
-El umbral crítico de control estratégico se establece cuando la suma combinada de costes de personal y materia prima (Prime Cost) supera el 62% de la facturación. De acuerdo con el marco teórico de Dopson y Hayes (2015), sobrepasar dicho límite neutraliza el margen de contribución necesario para sufragar los costes fijos de la estructura, convirtiéndose en un disparador inmediato para la toma de medidas correctoras en la gestión operativa del restaurante.
+Este límite del 62% de Prime Cost es la línea roja de rentabilidad de la empresa. Como explican Dopson y Hayes (2015), si la suma de costes de personal y materia prima supera este porcentaje de las ventas, el local entra en pérdidas ya que no queda margen suficiente para cubrir los costes fijos (alquileres, suministros, impuestos y amortizaciones). Por tanto, cuando el indicador cruza esta barrera, la dirección debe intervenir para ajustar los costes de forma inmediata.
 
 Iniciativas vinculadas:
 

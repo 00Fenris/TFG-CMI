@@ -320,7 +320,7 @@ export default function KpiScorecard({ token }) {
                                             </td>
                                             {selectedRestaurant === 'all' && (
                                                 <td style={{ padding: 12, color: '#64748b' }}>
-                                                    {item.restaurant?.name?.replace('Claunafood - ', '')}
+                                                    {item.restaurant?.name?.replace('Grupo HORECA Demo - ', '')}
                                                 </td>
                                             )}
                                             <td style={{ padding: 12, textAlign: 'right', fontWeight: 600 }}>

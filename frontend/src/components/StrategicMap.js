@@ -112,7 +112,7 @@ export default function StrategicMap({ token }) {
     return (
         <div>
             <div className="app-header">
-                <h1>📊 Mapa Estratégico - Claunafood S.L.</h1>
+                <h1>📊 Mapa Estratégico - Grupo HORECA Demo</h1>
                 <div className="controls">
                     <button onClick={() => navigate('/dashboard')}>← Volver al Dashboard</button>
                 </div>

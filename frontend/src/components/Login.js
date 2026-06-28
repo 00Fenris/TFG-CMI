@@ -67,7 +67,7 @@ export default function Login({ onLogin }) {
           }}>
             🍕
           </div>
-          <h2 style={{ margin: 0, fontSize: '24px', fontWeight: '700', letterSpacing: '-0.5px' }}>Claunafood</h2>
+          <h2 style={{ margin: 0, fontSize: '24px', fontWeight: '700', letterSpacing: '-0.5px' }}>Grupo HORECA Demo</h2>
           <p style={{ color: '#94a3b8', margin: '8px 0 0 0', fontSize: '14px' }}>Cuadro de Mando Integral</p>
         </div>
 
@@ -141,7 +141,7 @@ export default function Login({ onLogin }) {
             <div style={{ display: 'flex', flexDirection: 'column', gap: '10px' }}>
               <button 
                 type="button" 
-                onClick={() => quickLogin('admin@claunafood.local', 'password')}
+                onClick={() => quickLogin('admin@demo.local', 'password')}
                 style={{
                   background: 'rgba(255,255,255,0.05)', border: '1px solid rgba(255,255,255,0.1)',
                   color: '#e2e8f0', padding: '10px', borderRadius: '8px', fontSize: '13px',
@@ -155,7 +155,7 @@ export default function Login({ onLogin }) {
               <div style={{ display: 'flex', gap: '10px' }}>
                 <button 
                   type="button" 
-                  onClick={() => quickLogin('manager.salamanca@claunafood.local', 'password')}
+                  onClick={() => quickLogin('manager.a@demo.local', 'password')}
                   style={{
                     flex: 1, background: 'rgba(16, 185, 129, 0.1)', border: '1px solid rgba(16, 185, 129, 0.2)',
                     color: '#34d399', padding: '10px', borderRadius: '8px', fontSize: '13px',
@@ -168,7 +168,7 @@ export default function Login({ onLogin }) {
                 </button>
                 <button 
                   type="button" 
-                  onClick={() => quickLogin('manager.zamora@claunafood.local', 'password')}
+                  onClick={() => quickLogin('manager.b@demo.local', 'password')}
                   style={{
                     flex: 1, background: 'rgba(16, 185, 129, 0.1)', border: '1px solid rgba(16, 185, 129, 0.2)',
                     color: '#34d399', padding: '10px', borderRadius: '8px', fontSize: '13px',

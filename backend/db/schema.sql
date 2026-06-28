@@ -1,4 +1,4 @@
--- SQL schema para Cuadro de Mando Integral - Claunafood S.L.
+-- SQL schema para Cuadro de Mando Integral - Grupo HORECA Demo
 -- PostgreSQL
 
 CREATE EXTENSION IF NOT EXISTS pgcrypto;
@@ -131,9 +131,9 @@ CREATE TRIGGER trg_tasks_updated_at BEFORE UPDATE ON tasks FOR EACH ROW EXECUTE 
 -- Sample seed data
 INSERT INTO restaurants (name, city, address, status)
 VALUES
-  ('Claunafood - Salamanca', 'Salamanca', 'Calle Feria 10', 'open'),
-  ('Claunafood - Zamora', 'Zamora', 'Calle Santa Clara 5', 'open'),
-  ('Claunafood - Tercer Restaurante', 'En apertura', 'TBD', 'opening')
+  ('Grupo HORECA Demo - Salamanca', 'Salamanca', 'Direccion demo A', 'open'),
+  ('Grupo HORECA Demo - Zamora', 'Zamora', 'Direccion demo B', 'open'),
+  ('Grupo HORECA Demo - Tercer Restaurante', 'En apertura', 'TBD', 'opening')
 ON CONFLICT DO NOTHING;
 
 -- Perspectives: Financiera, Clientes, Procesos internos, Aprendizaje y crecimiento
@@ -147,9 +147,9 @@ ON CONFLICT DO NOTHING;
 -- Example users -- NOTE: Replace with proper hashed passwords via seed script
 INSERT INTO users (name, email, password_hash, role, restaurant_id)
 VALUES
-  ('Admin Clauna', 'admin@claunafood.local', gen_random_uuid()::text, 'admin', NULL),
-  ('Manager Salamanca', 'manager.salamanca@claunafood.local', gen_random_uuid()::text, 'manager', 1),
-  ('Manager Zamora', 'manager.zamora@claunafood.local', gen_random_uuid()::text, 'manager', 2)
+  ('Admin Demo', 'admin@demo.local', gen_random_uuid()::text, 'admin', NULL),
+  ('Manager Salamanca', 'manager.a@demo.local', gen_random_uuid()::text, 'manager', 1),
+  ('Manager Zamora', 'manager.b@demo.local', gen_random_uuid()::text, 'manager', 2)
 ON CONFLICT DO NOTHING;
 
 -- Add example objectives

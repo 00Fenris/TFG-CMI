@@ -28,9 +28,9 @@ async function seed() {
   // RESTAURANTES (Nombres esperados por el Frontend)
   // ==========================================
   const [salaman, zamora, opening] = await Promise.all([
-    retry(() => Restaurant.findOrCreate({ where: { name: 'Ditaly (Salamanca)' }, defaults: { city: 'Salamanca', address: 'Calle Feria 10', status: 'open' } })),
-    retry(() => Restaurant.findOrCreate({ where: { name: 'La Mafia (Zamora)' }, defaults: { city: 'Zamora', address: 'Calle Santa Clara 5', status: 'open' } })),
-    retry(() => Restaurant.findOrCreate({ where: { name: 'LaRuqa (Siglo XXI - Zamora)' }, defaults: { city: 'Zamora', address: 'TBD', status: 'opening' } }))
+    retry(() => Restaurant.findOrCreate({ where: { name: 'Restaurante A (Salamanca)' }, defaults: { city: 'Salamanca', address: 'Direccion demo A', status: 'open' } })),
+    retry(() => Restaurant.findOrCreate({ where: { name: 'Restaurante B (Zamora)' }, defaults: { city: 'Zamora', address: 'Direccion demo B', status: 'open' } })),
+    retry(() => Restaurant.findOrCreate({ where: { name: 'Restaurante C (Zamora)' }, defaults: { city: 'Zamora', address: 'TBD', status: 'opening' } }))
   ]).then(rows => rows.map(r => Array.isArray(r) ? r[0] : r));
 
   // ==========================================
@@ -53,16 +53,16 @@ async function seed() {
   // USUARIOS
   // ==========================================
   const [admin] = await retry(() => User.findOrCreate({ 
-    where: { email: 'admin@claunafood.local' }, 
-    defaults: { name: 'Administrador General', email: 'admin@claunafood.local', password_hash: passwordHash, role: 'admin' } 
+    where: { email: 'admin@demo.local' }, 
+    defaults: { name: 'Administrador General', email: 'admin@demo.local', password_hash: passwordHash, role: 'admin' } 
   }));
   const [managerSal] = await retry(() => User.findOrCreate({ 
-    where: { email: 'manager.salamanca@claunafood.local' }, 
-    defaults: { name: 'María García (Salamanca)', email: 'manager.salamanca@claunafood.local', password_hash: passwordHash, role: 'manager', restaurant_id: salaman.id } 
+    where: { email: 'manager.a@demo.local' }, 
+    defaults: { name: 'Manager A', email: 'manager.a@demo.local', password_hash: passwordHash, role: 'manager', restaurant_id: salaman.id } 
   }));
   const [managerZam] = await retry(() => User.findOrCreate({ 
-    where: { email: 'manager.zamora@claunafood.local' }, 
-    defaults: { name: 'Carlos López (Zamora)', email: 'manager.zamora@claunafood.local', password_hash: passwordHash, role: 'manager', restaurant_id: zamora.id } 
+    where: { email: 'manager.b@demo.local' }, 
+    defaults: { name: 'Manager B', email: 'manager.b@demo.local', password_hash: passwordHash, role: 'manager', restaurant_id: zamora.id } 
   }));
 
   // ==========================================

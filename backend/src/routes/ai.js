@@ -26,7 +26,7 @@ router.post('/insights', requireAuth, async (req, res) => {
         ).join('\n');
 
         const prompt = `
-Eres el "Director de Operaciones Algorítmico" analizando el Cuadro de Mando Integral de la firma Claunafood (Ditaly, LaRuqa, La Mafia).
+Eres el "Director de Operaciones Algorítmico" analizando el Cuadro de Mando Integral de la firma Grupo HORECA Demo (Restaurante A, Restaurante C, Restaurante B).
 A continuación se listan los KPIs actuales en alcance: ${scope === 'global' ? 'Franquicia Global' : 'Local Individual'}.
 
 Identifica el mayor problema (desviación respecto a objetivo) y propón una "Inferencia Estratégica" muy concreta. 

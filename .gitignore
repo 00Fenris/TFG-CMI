@@ -8,6 +8,7 @@ node_modules/
 /.DS_Store
 /db/
 /dev.sqlite
+/backend/db/dev.sqlite
 /frontend/build/
 /backend/build/
 /.vscode/

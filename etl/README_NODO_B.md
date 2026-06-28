@@ -1,4 +1,4 @@
-# 🖥️ Instrucciones para Nodo B (Windows) — Bot ETL Claunafood
+# 🖥️ Instrucciones para Nodo B (Windows) — Bot ETL Grupo HORECA Demo
 
 > Este script lo diseñó **Nodo A (Mac)**. Tú (Nodo B) solo tienes que instalarlo y programarlo.
 
@@ -63,7 +63,7 @@ Ejecuta desde PowerShell:
 $action  = New-ScheduledTaskAction -Execute "python" -Argument "F:\CerebroNAS\scripts\etl_facturas.py"
 $trigger = New-ScheduledTaskTrigger -Daily -At "08:00AM"
 $settings = New-ScheduledTaskSettingsSet -RunOnlyIfNetworkAvailable -WakeToRun
-Register-ScheduledTask -TaskName "ETL_Claunafood" -Action $action -Trigger $trigger -Settings $settings -RunLevel Highest
+Register-ScheduledTask -TaskName "ETL_Grupo HORECA Demo" -Action $action -Trigger $trigger -Settings $settings -RunLevel Highest
 ```
 
 > El script correrá todos los días a las 8:00 AM, procesará los PDFs nuevos y enviará el resumen a Telegram.

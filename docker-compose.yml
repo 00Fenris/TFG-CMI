@@ -3,15 +3,15 @@ services:
     image: postgres:15-alpine
     restart: always
     environment:
-      POSTGRES_USER: clauna
-      POSTGRES_PASSWORD: clauna123
+      POSTGRES_USER: tfguser
+      POSTGRES_PASSWORD: tfg123
       POSTGRES_DB: tfg_cmi
     volumes:
       - dbdata:/var/lib/postgresql/data
     ports:
       - '5432:5432'
     healthcheck:
-      test: ['CMD-SHELL', 'pg_isready -U clauna -d tfg_cmi']
+      test: ['CMD-SHELL', 'pg_isready -U tfguser -d tfg_cmi']
       interval: 5s
       timeout: 5s
       retries: 10
@@ -22,7 +22,7 @@ services:
     depends_on:
       - db
     environment:
-      DATABASE_URL: postgres://clauna:clauna123@db:5432/tfg_cmi
+      DATABASE_URL: postgres://tfguser:tfg123@db:5432/tfg_cmi
       JWT_SECRET: changeme
       JWT_EXPIRES_IN: 7d
       SEED_DB: 'true'

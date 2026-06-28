@@ -38,7 +38,7 @@ app.use('/ai', aiRoutes);
 app.get('/', async (req, res) => {
   try {
     await sequelize.authenticate();
-    res.json({ message: 'API - CMI Claunafood', db: 'connected' });
+    res.json({ message: 'API - CMI Grupo HORECA Demo', db: 'connected' });
   } catch (err) {
     console.error('DB connect error', err);
     res.status(500).json({ message: 'db error', error: err.message });

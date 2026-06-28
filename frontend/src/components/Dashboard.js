@@ -39,9 +39,9 @@ export default function Dashboard({ token, onLogout }) {
     const res = await api.get('/restaurants');
     const mapped = res.data.map(r => {
       let prettyName = r.name;
-      if (r.name.includes('Nuevo Local')) prettyName = 'Claunafood - LaRuqa (Siglo XXI - Zamora)';
-      else if (r.name.includes('Salamanca')) prettyName = 'Claunafood - Ditaly (Salamanca)';
-      else if (r.name.includes('Zamora')) prettyName = 'Claunafood - La Mafia (Zamora)';
+      if (r.name.includes('Nuevo Local')) prettyName = 'Grupo HORECA Demo - Restaurante C (Zamora)';
+      else if (r.name.includes('Salamanca')) prettyName = 'Grupo HORECA Demo - Restaurante A (Salamanca)';
+      else if (r.name.includes('Zamora')) prettyName = 'Grupo HORECA Demo - Restaurante B (Zamora)';
       return { ...r, name: prettyName };
     });
     const filtered = user.role === 'admin' ? mapped : mapped.filter(r => r.id === user.restaurant_id);
@@ -333,7 +333,7 @@ export default function Dashboard({ token, onLogout }) {
         </div>
       )}
       <div className="app-header">
-        <h1>Claunafood — Cuadro de Mando Integral</h1>
+        <h1>Grupo HORECA Demo — Cuadro de Mando Integral</h1>
         <div className="controls">
           <button onClick={() => navigate('/strategic-map')}>🗺️ Mapa Estratégico</button>
           <button onClick={() => navigate('/comparison')}>📊 Comparar</button>

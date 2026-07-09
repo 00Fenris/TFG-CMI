@@ -1,69 +1,76 @@
-# TFG-CMI - Balanced Scorecard for Restaurant Operations
+# TFG-CMI - Cuadro de Mando Integral para restauracion
 
-Academic and portfolio project developed by Ignacio Molina Palacios for a real, anonymized HORECA case. The goal is to turn business strategy into an operational monitoring system: objectives, Balanced Scorecard perspectives, KPIs, alerts, tasks and comparison between restaurant units.
+Proyecto academico y de portfolio desarrollado por **Ignacio Molina Palacios** como Trabajo Fin de Grado en ADE Tecnologico. El objetivo es convertir la estrategia de un negocio HORECA en un sistema de seguimiento operativo con KPIs, objetivos, alertas, tareas y comparacion entre unidades de negocio.
 
-## Value Proposition
+Este repositorio no se presenta como un proyecto de ingenieria pura. Su valor principal esta en la conexion entre **negocio, operaciones, datos, analisis funcional y prototipado digital**.
 
-The project connects business analysis and applied technology. It starts from a functional problem in restaurant operations and translates it into a working web application where management roles can monitor indicators, detect deviations and prioritize actions.
+## Contexto
 
-This is not presented as a pure software engineering project. Its main value is the functional bridge between business, operations, data, KPI design and a usable digital prototype.
+El proyecto parte de un caso real anonimizado del sector restauracion. La necesidad principal era ordenar la informacion de gestion y traducirla a indicadores accionables para facilitar el seguimiento de objetivos, desviaciones y prioridades operativas.
 
-## Main Features
+## Mi aportacion
 
-- KPI dashboard by restaurant and strategic perspective.
-- Balanced Scorecard map for business objectives.
-- Comparison between restaurant units.
-- Objective, KPI entry, task and alert management.
-- JWT authentication and role-based access.
-- Seed data for local demos.
-- Docker Compose setup for backend, frontend and database.
+- Definicion funcional del cuadro de mando: objetivos, perspectivas, KPIs y logica de seguimiento.
+- Analisis de procesos de restauracion y necesidades de gestion para dos unidades de negocio.
+- Documentacion funcional y preparacion de la defensa academica del proyecto.
+- Prototipado web del sistema con apoyo de IA generativa para acelerar la parte tecnica.
+- Estructuracion de datos de demostracion anonimizados para poder ensenar el funcionamiento sin exponer informacion real.
 
-## Tech Stack
+## Funcionalidades
+
+- Dashboard de KPIs por restaurante y perspectiva estrategica.
+- Mapa estrategico basado en Balanced Scorecard.
+- Comparacion entre unidades de negocio.
+- Gestion de objetivos, KPIs, tareas y alertas.
+- Autenticacion con JWT y roles de usuario.
+- Datos de demostracion para ejecucion local.
+- Entorno local con Docker Compose.
+
+## Stack
 
 - Frontend: React, React Router, Axios, Recharts.
 - Backend: Node.js, Express, Sequelize, JWT, bcrypt.
-- Data: PostgreSQL in Docker and SQLite for local development.
-- Workflow: Docker Compose and Windows desktop build exploration.
-- AI exploration: Groq SDK and Telegram bot scenarios for assistance and alerts.
+- Datos: PostgreSQL en Docker y SQLite solo para desarrollo local.
+- Entorno: Docker Compose.
+- Exploracion IA: Groq SDK y escenarios de asistencia/alertas.
 
-## Project Structure
+## Estructura
 
 ```text
-backend/   Express API, Sequelize models, routes, controllers and seed data
-frontend/  React application with login, dashboard, strategic map and comparisons
-etl/       Supporting scripts for data workflows
-desktop/   Desktop packaging exploration
+backend/   API Express, modelos Sequelize, rutas, controladores y seed data
+frontend/  Aplicacion React con login, dashboard, mapa estrategico y comparativas
+etl/       Scripts auxiliares para flujos de datos
 ```
 
-## Local Demo
+## Demo local
 
-Requirements:
+Requisitos:
 
 - Docker Desktop
-- Node.js if backend/frontend are run outside Docker
+- Node.js si se ejecutan backend/frontend fuera de Docker
 
-Run the full demo:
+Arranque:
 
 ```bash
 docker compose up --build
 ```
 
-Default services:
+Servicios por defecto:
 
 - API: `http://localhost:4000`
 - Frontend: `http://localhost:3000`
 
-Demo users:
+Usuarios de demostracion:
 
 - `admin@demo.local`
 - `manager.a@demo.local`
 - `manager.b@demo.local`
 
-Default password:
+Contrasena de demo:
 
 - `password`
 
-Quick login test:
+Prueba rapida de login:
 
 ```bash
 curl -X POST -H "Content-Type: application/json" \
@@ -71,18 +78,6 @@ curl -X POST -H "Content-Type: application/json" \
   http://localhost:4000/auth/login
 ```
 
-## Academic Context
+## Estado del repositorio
 
-This repository is part of Ignacio Molina Palacios' final degree project in Business Administration and Management of Technology Companies.
-
-The project demonstrates:
-
-- Strategic analysis translated into actionable KPIs.
-- Functional data modeling for restaurant operations.
-- Full stack prototyping for a management tool.
-- Prioritization of business needs and user experience.
-- Documentation and defense of a business-technology solution.
-
-## Privacy Note
-
-The public repository uses an anonymized business case and demo data. Detailed academic documents, real-case notes and local databases are intentionally excluded from the public portfolio version.
+Repositorio preparado como muestra de portfolio. Los datos son anonimizados o de demostracion. La documentacion academica completa, notas internas, documentos privados y bases de datos locales quedan fuera del repositorio publico.

@@ -5,6 +5,20 @@ node_modules/
 /frontend/.env
 /backend/.env
 .env.local
+
+# Local environment and demo databases
+.env
+.env.*
+!.env.example
+*.sqlite
+*.sqlite3
+*.db
+/backend/db/*.sqlite
+/backend/db/*.sqlite3
+/backend/db/*.db
+/frontend/.env.local
+/backend/.env.local
+
 /.DS_Store
 /db/
 /dev.sqlite
